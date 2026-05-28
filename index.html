@@ -1,764 +1,568 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>So Laziz — منيو مطعمك في جيبك</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>So Laziz — قائمة طعامك الرقمية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --gold:#F5A623;
-  --gold-dark:#C47C00;
-  --gold-light:#FFD166;
-  --black:#0A0A0A;
-  --dark:#111111;
-  --card:#181818;
-  --border:rgba(245,166,35,0.2);
-  --text:#FFFFFF;
-  --muted:rgba(255,255,255,0.55);
-}
-html{scroll-behavior:smooth}
-body{
-  background:var(--black);
-  color:var(--text);
-  font-family:'Tajawal',sans-serif;
-  overflow-x:hidden;
-  cursor:none;
-}
+  :root {
+    --gold1: #FFCC44;
+    --gold2: #E08A00;
+    --bg: #111111;
+    --card: #1a1a1a;
+    --border: #2a2a2a;
+  }
 
-/* CUSTOM CURSOR */
-.cursor{
-  position:fixed;width:12px;height:12px;
-  background:var(--gold);border-radius:50%;
-  pointer-events:none;z-index:9999;
-  transition:transform 0.15s ease,opacity 0.15s;
-  mix-blend-mode:difference;
-}
-.cursor-follow{
-  position:fixed;width:40px;height:40px;
-  border:1.5px solid var(--gold);border-radius:50%;
-  pointer-events:none;z-index:9998;
-  transition:transform 0.35s cubic-bezier(0.16,1,0.3,1),opacity 0.2s;
-  opacity:0.5;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* PRELOADER */
-#preloader{
-  position:fixed;inset:0;background:var(--black);
-  z-index:1000;display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:24px;
-  transition:opacity 0.8s ease,visibility 0.8s;
-}
-#preloader.hidden{opacity:0;visibility:hidden;pointer-events:none}
-.loader-ring{
-  width:64px;height:64px;border-radius:50%;
-  border:3px solid rgba(245,166,35,0.15);
-  border-top-color:var(--gold);
-  animation:spin 0.9s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loader-text{
-  font-size:14px;color:var(--muted);letter-spacing:3px;
-  text-transform:uppercase;font-weight:500;
-}
+  body {
+    background: var(--bg);
+    color: #fff;
+    font-family: 'Tajawal', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
 
-/* CANVAS 3D */
-#canvas-container{
-  position:fixed;inset:0;z-index:0;
-  opacity:0;transition:opacity 1.2s ease;
-}
-#canvas-container.visible{opacity:1}
-#bg-canvas{width:100%;height:100%;display:block}
+  /* ── PRELOADER ── */
+  #preloader {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 24px;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #preloader.hidden { opacity: 0; visibility: hidden; }
 
-/* NOISE OVERLAY */
-body::before{
-  content:'';position:fixed;inset:0;z-index:1;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events:none;opacity:0.4;
-}
+  .loader-ring {
+    width: 64px; height: 64px;
+    border: 3px solid #222;
+    border-top-color: var(--gold1);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  .loader-text {
+    color: #555;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
 
-/* VIGNETTE */
-body::after{
-  content:'';position:fixed;inset:0;z-index:1;
-  background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,0.7) 100%);
-  pointer-events:none;
-}
+  /* ── CANVAS ── */
+  #three-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  #three-canvas.visible { opacity: 1; }
 
-/* MAIN CONTENT */
-#content{
-  position:relative;z-index:10;
-  min-height:100vh;
-}
+  /* ── OVERLAY GRADIENT ── */
+  .overlay {
+    position: fixed; inset: 0; z-index: 1;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255,204,68,.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 100%, rgba(224,138,0,.05) 0%, transparent 60%),
+      linear-gradient(to bottom, rgba(17,17,17,0.3) 0%, rgba(17,17,17,0.7) 60%, rgba(17,17,17,0.95) 100%);
+    pointer-events: none;
+  }
 
-/* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:20px 48px;
-  display:flex;align-items:center;justify-content:space-between;
-  background:linear-gradient(to bottom,rgba(10,10,10,0.9),transparent);
-  backdrop-filter:blur(0px);
-  transition:backdrop-filter 0.3s,background 0.3s;
-}
-nav.scrolled{
-  backdrop-filter:blur(20px);
-  background:rgba(10,10,10,0.85);
-  border-bottom:0.5px solid var(--border);
-}
-.nav-logo{
-  font-family:'Montserrat',sans-serif;
-  font-size:22px;font-weight:900;
-  background:linear-gradient(135deg,var(--gold-light),var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  letter-spacing:-0.5px;
-}
-.nav-links{
-  display:flex;gap:36px;list-style:none;
-  font-size:14px;font-weight:500;
-}
-.nav-links a{
-  color:var(--muted);text-decoration:none;
-  transition:color 0.2s;letter-spacing:0.5px;
-}
-.nav-links a:hover{color:var(--gold)}
-.nav-cta{
-  padding:10px 24px;border-radius:100px;
-  background:var(--gold);color:var(--black);
-  font-weight:700;font-size:14px;text-decoration:none;
-  transition:transform 0.2s,box-shadow 0.2s;
-  font-family:'Tajawal',sans-serif;
-}
-.nav-cta:hover{transform:scale(1.04);box-shadow:0 0 32px rgba(245,166,35,0.4)}
+  /* ── MAIN CONTENT ── */
+  #content {
+    position: relative; z-index: 2;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 20px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease 0.5s, transform 1s ease 0.5s;
+  }
+  #content.visible { opacity: 1; transform: translateY(0); }
 
-/* HERO */
-.hero{
-  min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  padding:120px 48px 80px;
-  position:relative;
-}
-.hero-inner{
-  max-width:780px;text-align:center;
-  opacity:0;transform:translateY(40px);
-  transition:opacity 1s ease 0.5s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.5s;
-}
-.hero-inner.visible{opacity:1;transform:translateY(0)}
+  /* ── LOGO AREA ── */
+  .logo-wrap {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 16px;
+    margin-bottom: 32px;
+    animation: floatY 4s ease-in-out infinite;
+  }
+  @keyframes floatY {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
 
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:8px 20px;border-radius:100px;
-  border:1px solid var(--border);
-  background:rgba(245,166,35,0.08);
-  font-size:13px;color:var(--gold);
-  margin-bottom:32px;letter-spacing:0.5px;
-  font-weight:500;
-}
-.hero-badge span{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--gold);animation:pulse 2s infinite;
-}
-@keyframes pulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,0.6)}
-  50%{box-shadow:0 0 0 8px rgba(245,166,35,0)}
-}
+  .app-icon {
+    width: 100px; height: 100px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, var(--gold1), var(--gold2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 52px;
+    box-shadow:
+      0 0 0 1px rgba(255,204,68,.2),
+      0 20px 60px rgba(255,204,68,.25),
+      0 4px 16px rgba(0,0,0,.5);
+    position: relative;
+    overflow: hidden;
+  }
+  .app-icon::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,.2), transparent 60%);
+  }
 
-.hero-logo-wrap{
-  width:120px;height:120px;border-radius:28px;
-  margin:0 auto 32px;
-  position:relative;overflow:hidden;
-  border:1.5px solid var(--border);
-  box-shadow:0 0 60px rgba(245,166,35,0.15);
-}
-.hero-logo-wrap img{width:100%;height:100%;object-fit:cover}
-.hero-logo-wrap::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(245,166,35,0.1),transparent);
-}
+  .app-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold1) 0%, var(--gold2) 50%, var(--gold1) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+    letter-spacing: -1px;
+    text-align: center;
+  }
+  @keyframes shimmer { to { background-position: 200% center; } }
 
-h1{
-  font-family:'Montserrat',sans-serif;
-  font-size:clamp(48px,8vw,88px);
-  font-weight:900;line-height:1;
-  letter-spacing:-3px;margin-bottom:16px;
-}
-h1 .line-gold{
-  background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.hero-sub{
-  font-size:clamp(16px,2.5vw,20px);
-  color:var(--muted);line-height:1.6;
-  max-width:520px;margin:0 auto 48px;
-  font-weight:400;
-}
+  .tagline {
+    font-size: clamp(14px, 2.5vw, 17px);
+    color: rgba(255,255,255,.55);
+    text-align: center;
+    max-width: 380px;
+    line-height: 1.7;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+  .tagline span {
+    color: var(--gold1);
+    font-weight: 700;
+  }
 
-.hero-actions{
-  display:flex;gap:16px;justify-content:center;flex-wrap:wrap;
-}
-.btn-primary{
-  padding:16px 36px;border-radius:100px;
-  background:linear-gradient(135deg,var(--gold-light),var(--gold));
-  color:var(--black);font-weight:800;font-size:16px;
-  text-decoration:none;font-family:'Tajawal',sans-serif;
-  transition:transform 0.2s,box-shadow 0.3s;
-  display:inline-flex;align-items:center;gap:8px;
-}
-.btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 20px 50px rgba(245,166,35,0.35)}
-.btn-secondary{
-  padding:16px 36px;border-radius:100px;
-  border:1.5px solid var(--border);
-  color:var(--text);font-weight:600;font-size:16px;
-  text-decoration:none;font-family:'Tajawal',sans-serif;
-  transition:border-color 0.2s,background 0.2s;
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,0.03);
-}
-.btn-secondary:hover{border-color:var(--gold);background:rgba(245,166,35,0.05)}
+  /* ── DIVIDER ── */
+  .divider {
+    width: 60px; height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold1), transparent);
+    margin: 28px auto;
+    border-radius: 2px;
+  }
 
-/* SCROLL INDICATOR */
-.scroll-hint{
-  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase;
-  animation:fadeInUp 1s ease 1.5s both;
-}
-.scroll-line{
-  width:1px;height:48px;
-  background:linear-gradient(to bottom,transparent,var(--gold),transparent);
-  animation:scrollPulse 2s ease infinite;
-}
-@keyframes scrollPulse{0%,100%{opacity:0.3;transform:scaleY(0.8)}50%{opacity:1;transform:scaleY(1)}}
-@keyframes fadeInUp{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+  /* ── BUTTONS ── */
+  .btns {
+    display: flex; gap: 14px;
+    flex-wrap: wrap; justify-content: center;
+    margin-top: 8px;
+  }
 
-/* MARQUEE */
-.marquee-section{
-  padding:24px 0;overflow:hidden;
-  border-top:0.5px solid var(--border);
-  border-bottom:0.5px solid var(--border);
-  background:rgba(245,166,35,0.03);
-}
-.marquee-track{
-  display:flex;gap:48px;
-  animation:marquee 20s linear infinite;
-  white-space:nowrap;width:max-content;
-}
-.marquee-item{
-  display:flex;align-items:center;gap:12px;
-  font-size:14px;color:var(--muted);font-weight:500;
-  letter-spacing:1px;text-transform:uppercase;
-}
-.marquee-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);flex-shrink:0}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+    justify-content: center;
+  }
+  .btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,.08);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn:hover::before { opacity: 1; }
+  .btn:hover { transform: translateY(-3px); }
+  .btn:active { transform: scale(0.97); }
 
-/* FEATURES */
-.features{
-  padding:120px 48px;
-  max-width:1200px;margin:0 auto;
-}
-.section-label{
-  font-size:12px;letter-spacing:4px;text-transform:uppercase;
-  color:var(--gold);font-weight:600;margin-bottom:16px;
-  display:flex;align-items:center;gap:12px;
-}
-.section-label::before{content:'';width:24px;height:1px;background:var(--gold)}
-.section-title{
-  font-family:'Montserrat',sans-serif;
-  font-size:clamp(32px,5vw,52px);font-weight:900;
-  line-height:1.1;letter-spacing:-2px;margin-bottom:64px;
-}
-.section-title em{
-  font-style:normal;
-  background:linear-gradient(135deg,var(--gold-light),var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
+  .btn-android {
+    background: linear-gradient(135deg, var(--gold1), var(--gold2));
+    color: #111;
+    box-shadow: 0 8px 32px rgba(255,204,68,.3);
+  }
+  .btn-android:hover { box-shadow: 0 12px 40px rgba(255,204,68,.45); }
 
-.features-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:2px;
-  border:0.5px solid var(--border);
-  border-radius:20px;overflow:hidden;
-}
-.feat-card{
-  padding:40px;background:var(--card);
-  transition:background 0.3s;
-  position:relative;overflow:hidden;
-}
-.feat-card::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(245,166,35,0.06),transparent);
-  opacity:0;transition:opacity 0.3s;
-}
-.feat-card:hover{background:#1e1e1e}
-.feat-card:hover::before{opacity:1}
-.feat-icon{
-  width:52px;height:52px;border-radius:14px;
-  background:rgba(245,166,35,0.1);
-  border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:24px;margin-bottom:24px;
-}
-.feat-title{font-size:18px;font-weight:700;margin-bottom:10px}
-.feat-desc{font-size:14px;color:var(--muted);line-height:1.7;font-weight:400}
+  .btn-ios {
+    background: transparent;
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,.15);
+    backdrop-filter: blur(10px);
+  }
+  .btn-ios:hover { border-color: rgba(255,204,68,.4); color: var(--gold1); }
 
-/* STATS */
-.stats{
-  padding:80px 48px;
-  border-top:0.5px solid var(--border);
-  border-bottom:0.5px solid var(--border);
-  background:rgba(245,166,35,0.02);
-}
-.stats-inner{
-  max-width:900px;margin:0 auto;
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:48px;text-align:center;
-}
-.stat-num{
-  font-family:'Montserrat',sans-serif;
-  font-size:clamp(40px,6vw,64px);font-weight:900;
-  background:linear-gradient(135deg,var(--gold-light),var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;letter-spacing:-2px;line-height:1;
-}
-.stat-label{font-size:14px;color:var(--muted);margin-top:8px;font-weight:500}
+  .btn-fb {
+    background: #1877F2;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(24,119,242,.35);
+  }
+  .btn-fb:hover { box-shadow: 0 12px 32px rgba(24,119,242,.5); }
 
-/* TESTIMONIAL / CTA */
-.cta-section{
-  padding:120px 48px;text-align:center;
-  position:relative;overflow:hidden;
-}
-.cta-section::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at center,rgba(245,166,35,0.08) 0%,transparent 70%);
-  pointer-events:none;
-}
-.cta-section .section-label{justify-content:center}
-.cta-section .section-label::before{display:none}
-.cta-big{
-  font-family:'Montserrat',sans-serif;
-  font-size:clamp(36px,6vw,72px);font-weight:900;
-  line-height:1.1;letter-spacing:-2px;
-  max-width:700px;margin:0 auto 48px;
-}
-.store-btns{
-  display:flex;gap:16px;justify-content:center;flex-wrap:wrap;
-}
-.store-btn{
-  padding:14px 28px;border-radius:14px;
-  background:var(--card);border:1px solid var(--border);
-  color:var(--text);text-decoration:none;
-  display:flex;align-items:center;gap:12px;
-  transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s;
-  font-family:'Tajawal',sans-serif;
-}
-.store-btn:hover{
-  border-color:var(--gold);transform:translateY(-2px);
-  box-shadow:0 8px 30px rgba(245,166,35,0.15);
-}
-.store-icon{font-size:28px}
-.store-info{text-align:right}
-.store-info small{display:block;font-size:11px;color:var(--muted);margin-bottom:2px}
-.store-info strong{font-size:15px;font-weight:700}
+  .btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 
-/* FOOTER */
-footer{
-  padding:40px 48px;
-  border-top:0.5px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center;
-  flex-wrap:wrap;gap:16px;
-}
-.footer-logo{
-  font-family:'Montserrat',sans-serif;font-size:18px;font-weight:900;
-  background:linear-gradient(135deg,var(--gold-light),var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.footer-copy{font-size:13px;color:var(--muted)}
-.footer-links{display:flex;gap:24px}
-.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s}
-.footer-links a:hover{color:var(--gold)}
+  /* ── MODAL ── */
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,.75);
+    backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  .modal-backdrop.open { opacity: 1; visibility: visible; }
 
-/* FLOAT ANIMATION */
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-12px)}
-}
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px 32px;
+    max-width: 360px; width: 100%;
+    text-align: center;
+    transform: scale(0.85) translateY(20px);
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 40px 80px rgba(0,0,0,.6);
+  }
+  .modal-backdrop.open .modal { transform: scale(1) translateY(0); }
 
-/* REVEAL */
-.reveal{
-  opacity:0;transform:translateY(32px);
-  transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.16,1,0.3,1);
-}
-.reveal.visible{opacity:1;transform:none}
-.reveal:nth-child(2){transition-delay:0.1s}
-.reveal:nth-child(3){transition-delay:0.2s}
-.reveal:nth-child(4){transition-delay:0.3s}
+  .modal-icon {
+    font-size: 52px; margin-bottom: 16px;
+    display: block;
+    animation: bounce 0.6s ease;
+  }
+  @keyframes bounce {
+    0%   { transform: scale(0); }
+    60%  { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
 
-/* RESPONSIVE */
-@media(max-width:768px){
-  nav{padding:16px 20px}
-  .nav-links{display:none}
-  .hero{padding:100px 20px 80px}
-  .features,.cta-section{padding:80px 20px}
-  .stats{padding:60px 20px}
-  footer{padding:32px 20px;flex-direction:column;text-align:center}
-  .footer-links{justify-content:center}
-  h1{letter-spacing:-1px}
-}
+  .modal h2 {
+    font-size: 22px; font-weight: 900;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+  .modal p {
+    color: rgba(255,255,255,.5);
+    font-size: 14px; line-height: 1.7;
+    margin-bottom: 28px;
+  }
+  .modal p strong { color: var(--gold1); }
+
+  .modal-close {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    background: var(--border);
+    color: #fff;
+    border: none;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: #333; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 2;
+    text-align: center;
+    padding: 24px 20px;
+    color: rgba(255,255,255,.2);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  footer span { color: var(--gold2); }
+
+  /* ── PARTICLES ── */
+  .particle {
+    position: fixed;
+    width: 2px; height: 2px;
+    background: var(--gold1);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 1;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .btns { flex-direction: column; align-items: center; }
+    .btn { width: 100%; max-width: 280px; }
+    .app-icon { width: 80px; height: 80px; font-size: 40px; border-radius: 22px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-follow" id="cursorFollow"></div>
-
 <!-- PRELOADER -->
 <div id="preloader">
   <div class="loader-ring"></div>
-  <p class="loader-text">So Laziz</p>
+  <div class="loader-text">So Laziz</div>
 </div>
 
-<!-- 3D CANVAS -->
-<div id="canvas-container">
-  <canvas id="bg-canvas"></canvas>
-</div>
+<!-- THREE.JS CANVAS -->
+<canvas id="three-canvas"></canvas>
 
-<div id="content">
+<!-- OVERLAY -->
+<div class="overlay"></div>
 
-  <!-- NAV -->
-  <nav id="navbar">
-    <div class="nav-logo">So Laziz</div>
-    <ul class="nav-links">
-      <li><a href="#features">المميزات</a></li>
-      <li><a href="#stats">أرقامنا</a></li>
-      <li><a href="#download">تحميل</a></li>
-    </ul>
-    <a href="#download" class="nav-cta">ابدأ مجاناً</a>
-  </nav>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-inner" id="heroContent">
-      <div class="hero-badge">
-        <span></span>
-        منيو ذكي لمطعمك
-      </div>
-      <div class="hero-logo-wrap">
-        <img src="1.png" alt="So Laziz Logo" onerror="this.parentElement.innerHTML='<div style=\'font-size:52px;display:flex;align-items:center;justify-content:center;height:100%\'>🍔</div>'"/>
-      </div>
-      <h1>
-        <span class="line-gold">So Laziz</span><br>
-        <span style="font-size:0.55em;letter-spacing:-1px;font-weight:700">منيو مطعمك في جيبك</span>
-      </h1>
-      <p class="hero-sub">
-        منصة احترافية لعرض منيو مطعمك بشكل أنيق وسهل — بدون تطبيق، بدون تعقيد، كل حاجة من موبايلك
-      </p>
-      <div class="hero-actions">
-        <a href="#download" class="btn-primary">
-          ⚡ حمّل التطبيق
-        </a>
-        <a href="#features" class="btn-secondary">
-          اعرف أكتر ←
-        </a>
-      </div>
-    </div>
-    <div class="scroll-hint">
-      <div class="scroll-line"></div>
-      <span>تمرير</span>
-    </div>
-  </section>
-
-  <!-- MARQUEE -->
-  <div class="marquee-section">
-    <div class="marquee-track" id="marqueeTrack">
-      <div class="marquee-item"><div class="marquee-dot"></div>منيو رقمي</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>تحديث فوري</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>QR Code</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>واجهة أنيقة</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>طلبات WhatsApp</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>داشبورد ذكي</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>دعم عربي وإنجليزي</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>بدون رسوم إضافية</div>
-      <!-- duplicate for infinite scroll -->
-      <div class="marquee-item"><div class="marquee-dot"></div>منيو رقمي</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>تحديث فوري</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>QR Code</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>واجهة أنيقة</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>طلبات WhatsApp</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>داشبورد ذكي</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>دعم عربي وإنجليزي</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>بدون رسوم إضافية</div>
-    </div>
+<!-- MAIN CONTENT -->
+<main id="content">
+  <div class="logo-wrap">
+    <div class="app-icon">🍽️</div>
+    <h1 class="app-name">So Laziz</h1>
   </div>
 
-  <!-- FEATURES -->
-  <section class="features" id="features">
-    <div class="reveal">
-      <p class="section-label">المميزات</p>
-      <h2 class="section-title">كل اللي مطعمك<br><em>محتاجه</em></h2>
-    </div>
-    <div class="features-grid">
-      <div class="feat-card reveal">
-        <div class="feat-icon">📋</div>
-        <h3 class="feat-title">منيو رقمي احترافي</h3>
-        <p class="feat-desc">اعرض منيو مطعمك بشكل أنيق وسهل التصفح، مع صور عالية الجودة وأسعار واضحة</p>
-      </div>
-      <div class="feat-card reveal">
-        <div class="feat-icon">⚡</div>
-        <h3 class="feat-title">تحديث فوري</h3>
-        <p class="feat-desc">غيّر الأسعار والعناصر في ثوانٍ من داشبورد التطبيق، والتغييرات تظهر فوراً للعملاء</p>
-      </div>
-      <div class="feat-card reveal">
-        <div class="feat-icon">📱</div>
-        <h3 class="feat-title">QR Code مميز</h3>
-        <p class="feat-desc">اطبع QR Code خاص بمطعمك وخليك العملاء يوصلوا للمنيو بضغطة واحدة</p>
-      </div>
-      <div class="feat-card reveal">
-        <div class="feat-icon">💬</div>
-        <h3 class="feat-title">طلبات واتساب</h3>
-        <p class="feat-desc">العملاء يقدروا يبعتوا طلباتهم مباشرة على واتساب بشكل منظم وسريع</p>
-      </div>
-      <div class="feat-card reveal">
-        <div class="feat-icon">🌍</div>
-        <h3 class="feat-title">عربي وإنجليزي</h3>
-        <p class="feat-desc">المنيو بيدعم اللغتين، عشان تخدم كل العملاء سواء محليين أو أجانب</p>
-      </div>
-      <div class="feat-card reveal">
-        <div class="feat-icon">🏪</div>
-        <h3 class="feat-title">إدارة الفروع</h3>
-        <p class="feat-desc">أدّر أكتر من فرع من مكان واحد، مع إمكانية مشاركة المنيو بين الفروع</p>
-      </div>
-    </div>
-  </section>
+  <p class="tagline">
+    قائمة طعامك الرقمية — أنيقة، سريعة، <span>لذيذة</span>
+  </p>
 
-  <!-- STATS -->
-  <section class="stats" id="stats">
-    <div class="stats-inner">
-      <div class="reveal">
-        <div class="stat-num" data-target="500">0</div>
-        <div class="stat-label">مطعم مسجل</div>
-      </div>
-      <div class="reveal">
-        <div class="stat-num" data-target="5000">0</div>
-        <div class="stat-label">مستخدم نشط</div>
-      </div>
-      <div class="reveal">
-        <div class="stat-num" data-target="99">0</div>
-        <div class="stat-label">٪ رضا العملاء</div>
-      </div>
-      <div class="reveal">
-        <div class="stat-num" data-target="24">0</div>
-        <div class="stat-label">ساعة دعم فني</div>
-      </div>
-    </div>
-  </section>
+  <div class="divider"></div>
 
-  <!-- CTA / DOWNLOAD -->
-  <section class="cta-section" id="download">
-    <p class="section-label reveal">حمّل التطبيق</p>
-    <h2 class="cta-big reveal">
-      ابدأ رحلتك مع<br>
-      <span style="background:linear-gradient(135deg,#FFD166,#F5A623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">So Laziz</span>
-      <br>دلوقتي
-    </h2>
-    <div class="store-btns reveal">
-      <a href="#" class="store-btn">
-        <span class="store-icon"></span>
-        <div class="store-info">
-          <small>متاح على</small>
-          <strong>App Store</strong>
-        </div>
-      </a>
-      <a href="#" class="store-btn">
-        <span class="store-icon">🤖</span>
-        <div class="store-info">
-          <small>متاح على</small>
-          <strong>Google Play</strong>
-        </div>
-      </a>
-    </div>
-  </section>
+  <div class="btns">
+    <button class="btn btn-android" onclick="showModal('android')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.637.637 0 0 0-.83.22l-1.88 3.24a11.463 11.463 0 0 0-8.94 0L5.65 5.67a.643.643 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.78 10.78 0 0 0 1 18h22a10.78 10.78 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
+      تحميل Android
+    </button>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-logo">So Laziz</div>
-    <p class="footer-copy">© 2026 So Laziz. جميع الحقوق محفوظة.</p>
-    <div class="footer-links">
-      <a href="#">الشروط</a>
-      <a href="#">الخصوصية</a>
-      <a href="#">تواصل معنا</a>
-    </div>
-  </footer>
+    <button class="btn btn-ios" onclick="showModal('ios')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      تحميل iOS
+    </button>
 
+    <a class="btn btn-fb" href="https://www.facebook.com/SoLazizMenus/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      تواصل معنا
+    </a>
+  </div>
+</main>
+
+<footer>
+  © 2025 <span>So Laziz</span> — جميع الحقوق محفوظة
+</footer>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <span class="modal-icon" id="modal-icon">🚀</span>
+    <h2 id="modal-title">قريباً!</h2>
+    <p id="modal-body">التطبيق <strong>غير متاح الآن</strong> على هذا النظام.<br>نعمل على إطلاقه قريباً، ترقّب!</p>
+    <button class="modal-close" onclick="closeModal()">حسناً، سأنتظر!</button>
+  </div>
 </div>
 
 <!-- THREE.JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// === CUSTOM CURSOR ===
-const cursor = document.getElementById('cursor')
-const follow = document.getElementById('cursorFollow')
-let mx=0,my=0,fx=0,fy=0
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX;my=e.clientY
-  cursor.style.left=mx-6+'px'
-  cursor.style.top=my-6+'px'
-})
-function animFollow(){
-  fx+=(mx-fx)*0.1
-  fy+=(my-fy)*0.1
-  follow.style.left=fx-20+'px'
-  follow.style.top=fy-20+'px'
-  requestAnimationFrame(animFollow)
+// ── PARTICLES ──────────────────────────────────────────
+function createParticles() {
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random() * 100}vw;
+      top: ${Math.random() * 100}vh;
+      animation: particleFloat ${4 + Math.random() * 6}s ease-in-out ${Math.random() * 4}s infinite;
+      width: ${1 + Math.random() * 2}px;
+      height: ${1 + Math.random() * 2}px;
+      opacity: ${0.1 + Math.random() * 0.3};
+    `;
+    document.body.appendChild(p);
+  }
 }
-animFollow()
-document.querySelectorAll('a,button').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';follow.style.transform='scale(0.5)'})
-  el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';follow.style.transform='scale(1)'})
-})
 
-// === THREE.JS BACKGROUND ===
-const canvas = document.getElementById('bg-canvas')
-const renderer = new THREE.WebGLRenderer({canvas,alpha:true,antialias:true})
-renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
-renderer.setSize(window.innerWidth,window.innerHeight)
+// ── THREE.JS SCENE ──────────────────────────────────────
+function initThree() {
+  const canvas = document.getElementById('three-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
 
-const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,1000)
-camera.position.z = 30
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 5);
 
-// Floating particles
-const particleCount = 120
-const geometry = new THREE.BufferGeometry()
-const positions = new Float32Array(particleCount*3)
-const sizes = new Float32Array(particleCount)
-for(let i=0;i<particleCount;i++){
-  positions[i*3]=(Math.random()-0.5)*80
-  positions[i*3+1]=(Math.random()-0.5)*60
-  positions[i*3+2]=(Math.random()-0.5)*40
-  sizes[i]=Math.random()*3+0.5
-}
-geometry.setAttribute('position',new THREE.BufferAttribute(positions,3))
-geometry.setAttribute('size',new THREE.BufferAttribute(sizes,1))
+  // Lights
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+  scene.add(ambientLight);
 
-const pMat = new THREE.ShaderMaterial({
-  uniforms:{uTime:{value:0},uColor:{value:new THREE.Color(0xF5A623)}},
-  vertexShader:`
-    attribute float size;
-    uniform float uTime;
-    void main(){
-      vec3 pos=position;
-      pos.y+=sin(uTime*0.5+position.x*0.1)*0.5;
-      pos.x+=cos(uTime*0.3+position.y*0.1)*0.3;
-      gl_Position=projectionMatrix*modelViewMatrix*vec4(pos,1.0);
-      gl_PointSize=size*(300.0/gl_Position.w);
+  const goldLight = new THREE.PointLight(0xFFCC44, 3, 20);
+  goldLight.position.set(3, 3, 3);
+  scene.add(goldLight);
+
+  const goldLight2 = new THREE.PointLight(0xE08A00, 2, 15);
+  goldLight2.position.set(-3, -2, 2);
+  scene.add(goldLight2);
+
+  const rimLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  rimLight.position.set(0, 5, -5);
+  scene.add(rimLight);
+
+  // ── Main dish geometry: torus knot (like a fancy plate swirl)
+  const torusGeo = new THREE.TorusKnotGeometry(1.2, 0.35, 128, 16, 2, 3);
+  const torusMat = new THREE.MeshStandardMaterial({
+    color: 0xFFCC44,
+    metalness: 0.9,
+    roughness: 0.15,
+    envMapIntensity: 1.5,
+  });
+  const torus = new THREE.Mesh(torusGeo, torusMat);
+  scene.add(torus);
+
+  // ── Orbiting spheres (like food dots)
+  const sphereGroup = new THREE.Group();
+  scene.add(sphereGroup);
+  const sphereColors = [0xFFCC44, 0xE08A00, 0xffffff, 0xFFCC44];
+  sphereColors.forEach((color, i) => {
+    const geo = new THREE.SphereGeometry(0.08 + i * 0.03, 16, 16);
+    const mat = new THREE.MeshStandardMaterial({ color, metalness: 0.8, roughness: 0.2, emissive: color, emissiveIntensity: 0.2 });
+    const mesh = new THREE.Mesh(geo, mat);
+    const angle = (i / sphereColors.length) * Math.PI * 2;
+    const radius = 2.2 + i * 0.15;
+    mesh.position.set(Math.cos(angle) * radius, Math.sin(angle) * 0.5, Math.sin(angle) * radius * 0.4);
+    sphereGroup.add(mesh);
+  });
+
+  // ── Floating particles in 3D
+  const particleGeo = new THREE.BufferGeometry();
+  const count = 200;
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count * 3; i++) {
+    positions[i] = (Math.random() - 0.5) * 20;
+  }
+  particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const particleMat = new THREE.PointsMaterial({
+    color: 0xFFCC44, size: 0.04, transparent: true, opacity: 0.4
+  });
+  const particles3D = new THREE.Points(particleGeo, particleMat);
+  scene.add(particles3D);
+
+  // ── Resize
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // ── Mouse parallax
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  // ── Intro animation state
+  let introProgress = 0;
+  let introScale = 0;
+  const clock = new THREE.Clock();
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    // Intro scale-in
+    if (introScale < 1) {
+      introScale = Math.min(1, introScale + 0.015);
+      torus.scale.setScalar(introScale * (1 + Math.sin(introScale * Math.PI) * 0.1));
     }
-  `,
-  fragmentShader:`
-    uniform vec3 uColor;
-    void main(){
-      float d=length(gl_PointCoord-vec2(0.5));
-      if(d>0.5)discard;
-      float a=1.0-smoothstep(0.3,0.5,d);
-      gl_FragColor=vec4(uColor,a*0.6);
-    }
-  `,
-  transparent:true,depthWrite:false,blending:THREE.AdditiveBlending
-})
-scene.add(new THREE.Points(geometry,pMat))
 
-// Floating geometric shapes
-const shapes = []
-const goldMat = new THREE.MeshBasicMaterial({color:0xF5A623,wireframe:true,transparent:true,opacity:0.15})
+    // Continuous rotation
+    torus.rotation.x = t * 0.3 + mouseY * 0.2;
+    torus.rotation.y = t * 0.5 + mouseX * 0.3;
+    torus.rotation.z = t * 0.1;
 
-;[
-  [new THREE.OctahedronGeometry(3),[-15,5,0]],
-  [new THREE.TetrahedronGeometry(2),[12,-6,5]],
-  [new THREE.IcosahedronGeometry(2.5),[-8,-10,-5]],
-  [new THREE.OctahedronGeometry(1.5),[18,10,-8]],
-  [new THREE.TetrahedronGeometry(3),[-20,-5,10]],
-].forEach(([geo,pos])=>{
-  const mesh=new THREE.Mesh(geo,goldMat.clone())
-  mesh.position.set(...pos)
-  scene.add(mesh)
-  shapes.push(mesh)
-})
+    // Orbiting spheres
+    sphereGroup.rotation.y = t * 0.4;
+    sphereGroup.rotation.x = Math.sin(t * 0.2) * 0.3;
 
-// Mouse parallax
-let mouseX=0,mouseY=0
-document.addEventListener('mousemove',e=>{
-  mouseX=(e.clientX/window.innerWidth-0.5)*2
-  mouseY=(e.clientY/window.innerHeight-0.5)*2
-})
+    // Particles drift
+    particles3D.rotation.y = t * 0.02;
+    particles3D.rotation.x = t * 0.01;
 
-let time=0
-function animate(){
-  requestAnimationFrame(animate)
-  time+=0.01
-  pMat.uniforms.uTime.value=time
-  shapes.forEach((m,i)=>{
-    m.rotation.x+=0.003+i*0.001
-    m.rotation.y+=0.005+i*0.0005
-    m.position.y+=Math.sin(time*0.5+i)*0.005
-  })
-  camera.position.x+=(mouseX*3-camera.position.x)*0.05
-  camera.position.y+=(-mouseY*2-camera.position.y)*0.05
-  camera.lookAt(scene.position)
-  renderer.render(scene,camera)
+    // Gold light pulse
+    goldLight.intensity = 2.5 + Math.sin(t * 2) * 0.8;
+
+    // Camera sway
+    camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+    camera.position.y += (-mouseY * 0.3 - camera.position.y) * 0.05;
+    camera.lookAt(scene.position);
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  return { canvas };
 }
-animate()
 
-window.addEventListener('resize',()=>{
-  camera.aspect=window.innerWidth/window.innerHeight
-  camera.updateProjectionMatrix()
-  renderer.setSize(window.innerWidth,window.innerHeight)
-})
+// ── INIT ───────────────────────────────────────────────
+window.addEventListener('load', () => {
+  createParticles();
 
-// === PRELOADER ===
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    document.getElementById('preloader').classList.add('hidden')
-    document.getElementById('canvas-container').classList.add('visible')
-    document.getElementById('heroContent').classList.add('visible')
-  },1200)
-})
+  setTimeout(() => {
+    try { initThree(); } catch(e) { console.warn('Three.js error:', e); }
 
-// === NAVBAR SCROLL ===
-window.addEventListener('scroll',()=>{
-  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50)
-})
+    const canvas = document.getElementById('three-canvas');
+    canvas.classList.add('visible');
 
-// === REVEAL ON SCROLL ===
-const revealObs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})
-},{threshold:0.15})
-document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el))
+    // Hide preloader
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('hidden');
+      document.getElementById('content').classList.add('visible');
+    }, 600);
+  }, 300);
+});
 
-// === COUNTER ANIMATION ===
-function animateCounter(el,target,suffix=''){
-  let current=0
-  const step=target/60
-  const timer=setInterval(()=>{
-    current+=step
-    if(current>=target){current=target;clearInterval(timer)}
-    el.textContent=Math.floor(current).toLocaleString('ar-EG')+(suffix)
-  },16)
+// ── MODAL ──────────────────────────────────────────────
+function showModal(type) {
+  const modal = document.getElementById('modal');
+  const icon  = document.getElementById('modal-icon');
+  const title = document.getElementById('modal-title');
+  const body  = document.getElementById('modal-body');
+
+  if (type === 'android') {
+    icon.textContent  = '🤖';
+    title.textContent = 'Android — قريباً!';
+    body.innerHTML    = 'تطبيق Android <strong>غير متاح الآن</strong>.<br>نعمل على إطلاقه قريباً، ترقّب!';
+  } else {
+    icon.textContent  = '🍎';
+    title.textContent = 'iOS — قريباً!';
+    body.innerHTML    = 'تطبيق iOS <strong>غير متاح الآن</strong>.<br>نعمل على إطلاقه قريباً، ترقّب!';
+  }
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
-const counterObs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const target=parseInt(e.target.dataset.target)
-      animateCounter(e.target,target)
-      counterObs.unobserve(e.target)
-    }
-  })
-},{threshold:0.5})
-document.querySelectorAll('[data-target]').forEach(el=>counterObs.observe(el))
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
 </script>
+
+<style>
+@keyframes particleFloat {
+  0%,100% { transform: translateY(0) scale(1); opacity: 0.15; }
+  50%      { transform: translateY(-30px) scale(1.5); opacity: 0.4; }
+}
+</style>
 </body>
 </html>
