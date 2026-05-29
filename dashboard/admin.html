@@ -906,7 +906,8 @@ async function impSubmit() {
       const data = await r.json()
       if (data.success) {
 const sections = data.data?.sections
-sectionId = sections?.[sections.length - 1]?._id
+sectionId = data.sectionId
+
         setProgDot(`s${si}`, 'done', `✓ ${sec.sectionAr} (${sec.sectionEn})`)
       } else {
         setProgDot(`s${si}`, 'error', `✗ ${sec.sectionAr}: ${data.message||'فشل'}`)
