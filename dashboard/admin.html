@@ -1,4 +1,5 @@
- <!DOCTYPE html> 
+
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -19,7 +20,6 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { background:var(--bg); color:var(--text); font-family:'Cairo',sans-serif; min-height:100vh; }
 
-    /* ===== TOPBAR ===== */
     #topbar {
       position:sticky; top:0; z-index:50;
       background:rgba(14,14,14,0.95); backdrop-filter:blur(12px);
@@ -60,281 +60,238 @@
     }
     .logout-btn:hover { border-color:var(--red); color:var(--red); }
 
-    /* ===== TABS ===== */
     .tabs-wrap {
       padding:16px 20px 0;
       display:flex; gap:8px; border-bottom:1px solid var(--border);
+      overflow-x:auto; scrollbar-width:none;
     }
+    .tabs-wrap::-webkit-scrollbar { display:none; }
     .tab-btn {
-      padding:10px 20px; border-radius:14px 14px 0 0; border:none;
+      padding:10px 20px; border-radius:14px 14px 0 0;
       font-family:'Cairo',sans-serif; font-size:14px; font-weight:900;
-      cursor:pointer; transition:all 0.2s;
+      cursor:pointer; transition:all 0.2s; white-space:nowrap;
       background:var(--item); color:var(--sub);
       border:1px solid var(--border); border-bottom:none;
       position:relative; bottom:-1px;
     }
-    .tab-btn.active {
-      background:var(--card); color:var(--text);
-      border-color:var(--border); border-bottom:1px solid var(--card);
-    }
-    .tab-btn.active.tab-sub  { color:var(--gold-1); }
-    .tab-btn.active.tab-menu { color:var(--blue); }
+    .tab-btn.active { background:var(--card); color:var(--text); border-color:var(--border); border-bottom:1px solid var(--card); }
+    .tab-btn.active.tab-sub   { color:var(--gold-1); }
+    .tab-btn.active.tab-menu  { color:var(--blue); }
+    .tab-btn.active.tab-import{ color:var(--green); }
 
-    /* ===== CONTENT ===== */
     .tab-content { display:none; padding:24px 20px 80px; }
     .tab-content.active { display:block; }
 
-    /* ===== SECTION TITLE ===== */
-    .section-title {
-      font-size:20px; font-weight:900; margin-bottom:6px;
-    }
+    .section-title { font-size:20px; font-weight:900; margin-bottom:6px; }
     .section-sub { font-size:13px; color:var(--sub); margin-bottom:24px; }
 
-    /* ===== SUBSCRIPTION TAB ===== */
-    .sub-grid {
-      display:grid; grid-template-columns:1fr; gap:20px; max-width:700px;
-    }
+    /* ===== SUB TAB ===== */
+    .sub-grid { display:grid; grid-template-columns:1fr; gap:20px; max-width:700px; }
     @media(min-width:640px) { .sub-grid { grid-template-columns:1fr 1fr; } }
-
     .sub-card {
       background:var(--card); border:1px solid var(--border);
       border-radius:20px; padding:20px; cursor:pointer;
       transition:all 0.2s; position:relative; overflow:hidden;
     }
-    .sub-card::before {
-      content:''; position:absolute; top:0; right:0; left:0; height:3px;
-      background:var(--gold-grad);
-    }
+    .sub-card::before { content:''; position:absolute; top:0; right:0; left:0; height:3px; background:var(--gold-grad); }
     .sub-card.plan-2::before { background:linear-gradient(90deg,var(--blue),var(--purple)); }
     .sub-card:hover { border-color:rgba(255,204,68,0.4); transform:translateY(-2px); }
     .sub-card.plan-2:hover { border-color:rgba(10,132,255,0.4); }
     .sub-card.selected { border-color:var(--gold-1); box-shadow:0 0 0 1px var(--gold-1); }
     .sub-card.plan-2.selected { border-color:var(--blue); box-shadow:0 0 0 1px var(--blue); }
-
     .plan-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
     .plan-name { font-size:15px; font-weight:900; }
-    .plan-check {
-      width:22px; height:22px; border-radius:50%;
-      border:2px solid var(--border); display:flex; align-items:center; justify-content:center;
-      font-size:11px; transition:all 0.2s; flex-shrink:0;
-    }
+    .plan-check { width:22px; height:22px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; transition:all 0.2s; flex-shrink:0; }
     .sub-card.selected .plan-check { background:var(--gold-1); border-color:var(--gold-1); color:#000; }
     .sub-card.plan-2.selected .plan-check { background:var(--blue); border-color:var(--blue); color:#fff; }
-
     .plan-features { display:flex; flex-direction:column; gap:6px; }
-    .plan-feat {
-      font-size:12px; color:var(--sub); display:flex; align-items:center; gap:6px;
-    }
+    .plan-feat { font-size:12px; color:var(--sub); display:flex; align-items:center; gap:6px; }
     .plan-feat .dot { width:5px; height:5px; border-radius:50%; background:var(--gold-1); flex-shrink:0; }
     .sub-card.plan-2 .plan-feat .dot { background:var(--blue); }
-
-    /* duration */
     .duration-wrap { margin-top:20px; max-width:700px; }
     .duration-label { font-size:13px; font-weight:900; color:var(--sub); margin-bottom:10px; }
     .duration-grid { display:flex; gap:8px; flex-wrap:wrap; }
-    .dur-btn {
-      padding:8px 18px; border-radius:12px; border:1px solid var(--border);
-      background:var(--item); color:var(--sub);
-      font-family:'Cairo',sans-serif; font-size:13px; font-weight:900;
-      cursor:pointer; transition:all 0.2s;
-    }
+    .dur-btn { padding:8px 18px; border-radius:12px; border:1px solid var(--border); background:var(--item); color:var(--sub); font-family:'Cairo',sans-serif; font-size:13px; font-weight:900; cursor:pointer; transition:all 0.2s; }
     .dur-btn.selected { background:var(--gold-grad); color:#000; border-color:transparent; }
-
-    /* generate */
     .generate-wrap { margin-top:24px; max-width:700px; }
-    .generate-btn {
-      width:100%; height:50px; border-radius:16px; border:none;
-      background:var(--gold-grad); color:#000;
-      font-family:'Cairo',sans-serif; font-size:16px; font-weight:900;
-      cursor:pointer; transition:all 0.2s;
-      display:flex; align-items:center; justify-content:center; gap:8px;
-    }
+    .generate-btn { width:100%; height:50px; border-radius:16px; border:none; background:var(--gold-grad); color:#000; font-family:'Cairo',sans-serif; font-size:16px; font-weight:900; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
     .generate-btn:hover { opacity:0.9; transform:translateY(-1px); }
     .generate-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
-
-    /* result */
-    .code-result {
-      margin-top:16px; max-width:700px;
-      background:var(--item); border:1px solid var(--border);
-      border-radius:16px; padding:16px 20px;
-      display:none;
-    }
+    .code-result { margin-top:16px; max-width:700px; background:var(--item); border:1px solid var(--border); border-radius:16px; padding:16px 20px; display:none; }
     .code-result.show { display:block; animation:fadeIn 0.3s ease; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
     .code-result-label { font-size:12px; color:var(--sub); font-weight:700; margin-bottom:8px; }
     .code-row { display:flex; align-items:center; gap:10px; }
-    .code-val {
-      flex:1; font-size:22px; font-weight:900; letter-spacing:3px;
-      background:var(--gold-grad);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-      font-family:monospace;
-    }
-    .copy-btn {
-      padding:8px 16px; border-radius:10px;
-      border:1px solid rgba(255,204,68,0.3); background:rgba(255,204,68,0.1);
-      color:var(--gold-1); font-family:'Cairo',sans-serif; font-size:12px; font-weight:900;
-      cursor:pointer; transition:all 0.2s; flex-shrink:0;
-    }
+    .code-val { flex:1; font-size:22px; font-weight:900; letter-spacing:3px; background:var(--gold-grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-family:monospace; }
+    .copy-btn { padding:8px 16px; border-radius:10px; border:1px solid rgba(255,204,68,0.3); background:rgba(255,204,68,0.1); color:var(--gold-1); font-family:'Cairo',sans-serif; font-size:12px; font-weight:900; cursor:pointer; transition:all 0.2s; flex-shrink:0; }
     .copy-btn:hover { background:rgba(255,204,68,0.2); }
     .copy-btn.copied { border-color:rgba(48,209,88,0.3); background:rgba(48,209,88,0.1); color:var(--green); }
     .code-meta { font-size:12px; color:var(--sub); margin-top:8px; }
-
-    /* history */
     .history-wrap { margin-top:32px; max-width:700px; }
     .history-title { font-size:14px; font-weight:900; color:var(--sub); margin-bottom:12px; }
     .history-list { display:flex; flex-direction:column; gap:8px; }
-    .history-item {
-      background:var(--item); border:1px solid var(--border);
-      border-radius:12px; padding:12px 16px;
-      display:flex; align-items:center; gap:12px;
-    }
+    .history-item { background:var(--item); border:1px solid var(--border); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:12px; }
     .hist-code { font-size:14px; font-weight:900; font-family:monospace; letter-spacing:2px; flex:1; }
     .hist-meta { font-size:11px; color:var(--sub); text-align:left; }
-    .hist-badge {
-      padding:3px 10px; border-radius:20px; font-size:11px; font-weight:900;
-      flex-shrink:0;
-    }
+    .hist-badge { padding:3px 10px; border-radius:20px; font-size:11px; font-weight:900; flex-shrink:0; }
     .hist-badge.used { background:rgba(48,209,88,0.1); color:var(--green); border:1px solid rgba(48,209,88,0.2); }
     .hist-badge.unused { background:rgba(255,204,68,0.1); color:var(--gold-1); border:1px solid rgba(255,204,68,0.2); }
 
-    /* ===== MENU REVIEW TAB ===== */
-    .menu-loader {
-      display:flex; flex-direction:column; align-items:center;
-      justify-content:center; min-height:40vh; gap:12px;
-    }
-    .ld-spinner {
-      width:36px; height:36px; border:3px solid var(--border);
-      border-top-color:var(--blue); border-radius:50%; animation:spin 0.8s linear infinite;
-    }
+    /* ===== MENU TAB ===== */
+    .menu-loader { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:40vh; gap:12px; }
+    .ld-spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--blue); border-radius:50%; animation:spin 0.8s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
     .ld-text { font-size:14px; color:var(--sub); font-weight:700; }
-
-    .menu-empty {
-      display:none; flex-direction:column; align-items:center;
-      justify-content:center; min-height:40vh; gap:12px; text-align:center;
-    }
+    .menu-empty { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:40vh; gap:12px; text-align:center; }
     .menu-empty.show { display:flex; }
     .empty-icon { font-size:52px; }
     .empty-title { font-size:18px; font-weight:900; }
     .empty-sub { font-size:13px; color:var(--sub); }
-
-    .menus-grid {
-      display:grid; grid-template-columns:1fr; gap:16px;
-    }
+    .menus-grid { display:grid; grid-template-columns:1fr; gap:16px; }
     @media(min-width:768px)  { .menus-grid { grid-template-columns:1fr 1fr; } }
     @media(min-width:1200px) { .menus-grid { grid-template-columns:1fr 1fr 1fr; } }
-
-    .menu-card {
-      background:var(--card); border:1px solid var(--border);
-      border-radius:20px; overflow:hidden;
-      border-top:3px solid var(--orange);
-      animation:cardIn 0.3s ease both;
-    }
+    .menu-card { background:var(--card); border:1px solid var(--border); border-radius:20px; overflow:hidden; border-top:3px solid var(--orange); animation:cardIn 0.3s ease both; }
     @keyframes cardIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
-
-    .menu-card-header {
-      padding:14px 16px 10px;
-      display:flex; align-items:center; gap:10px;
-    }
-    .pending-dot {
-      width:8px; height:8px; border-radius:50%;
-      background:var(--orange); box-shadow:0 0 8px var(--orange);
-      flex-shrink:0;
-    }
+    .menu-card-header { padding:14px 16px 10px; display:flex; align-items:center; gap:10px; }
+    .pending-dot { width:8px; height:8px; border-radius:50%; background:var(--orange); box-shadow:0 0 8px var(--orange); flex-shrink:0; }
     .menu-branch-name { font-size:14px; font-weight:900; flex:1; }
-    .menu-id-badge {
-      font-size:10px; font-weight:700; padding:3px 8px;
-      border-radius:8px; background:var(--item);
-      color:var(--sub); font-family:monospace; flex-shrink:0;
-    }
+    .menu-id-badge { font-size:10px; font-weight:700; padding:3px 8px; border-radius:8px; background:var(--item); color:var(--sub); font-family:monospace; flex-shrink:0; }
     .menu-time { font-size:11px; color:var(--sub); flex-shrink:0; }
-
-    .menu-preview {
-      padding:0 16px 14px;
-    }
+    .menu-preview { padding:0 16px 14px; }
     .menu-preview-label { font-size:11px; color:var(--sub); font-weight:700; margin-bottom:8px; }
     .menu-sections { display:flex; flex-wrap:wrap; gap:6px; }
-    .section-tag {
-      padding:4px 10px; border-radius:8px; font-size:11px; font-weight:700;
-      background:rgba(10,132,255,0.1); color:var(--blue);
-      border:1px solid rgba(10,132,255,0.2);
-    }
-    .items-count {
-      font-size:12px; color:var(--sub); margin-top:8px;
-    }
-
+    .section-tag { padding:4px 10px; border-radius:8px; font-size:11px; font-weight:700; background:rgba(10,132,255,0.1); color:var(--blue); border:1px solid rgba(10,132,255,0.2); }
+    .items-count { font-size:12px; color:var(--sub); margin-top:8px; }
     .menu-divider { height:1px; background:var(--border); margin:0 16px; }
-
-    .menu-actions {
-      padding:12px 16px 16px; display:flex; gap:8px;
-    }
-    .approve-btn {
-      flex:1; height:40px; border-radius:12px; border:none;
-      background:rgba(48,209,88,0.15); color:var(--green);
-      border:1px solid rgba(48,209,88,0.3);
-      font-family:'Cairo',sans-serif; font-size:13px; font-weight:900;
-      cursor:pointer; transition:all 0.2s;
-      display:flex; align-items:center; justify-content:center; gap:6px;
-    }
+    .menu-actions { padding:12px 16px 16px; display:flex; gap:8px; }
+    .approve-btn { flex:1; height:40px; border-radius:12px; background:rgba(48,209,88,0.15); color:var(--green); border:1px solid rgba(48,209,88,0.3); font-family:'Cairo',sans-serif; font-size:13px; font-weight:900; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:6px; }
     .approve-btn:hover { background:rgba(48,209,88,0.25); }
-    .reject-btn {
-      flex:1; height:40px; border-radius:12px;
-      background:rgba(255,59,48,0.15); color:var(--red);
-      border:1px solid rgba(255,59,48,0.3);
-      font-family:'Cairo',sans-serif; font-size:13px; font-weight:900;
-      cursor:pointer; transition:all 0.2s;
-      display:flex; align-items:center; justify-content:center; gap:6px;
-    }
+    .reject-btn { flex:1; height:40px; border-radius:12px; background:rgba(255,59,48,0.15); color:var(--red); border:1px solid rgba(255,59,48,0.3); font-family:'Cairo',sans-serif; font-size:13px; font-weight:900; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:6px; }
     .reject-btn:hover { background:rgba(255,59,48,0.25); }
-    .view-btn {
-      width:40px; height:40px; border-radius:12px;
-      background:rgba(10,132,255,0.1); color:var(--blue);
-      border:1px solid rgba(10,132,255,0.3);
-      font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;
-      transition:all 0.2s; flex-shrink:0;
-    }
+    .view-btn { width:40px; height:40px; border-radius:12px; background:rgba(10,132,255,0.1); color:var(--blue); border:1px solid rgba(10,132,255,0.3); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; flex-shrink:0; }
     .view-btn:hover { background:rgba(10,132,255,0.2); }
 
-    /* ===== REJECT MODAL ===== */
-    #reject-modal {
-      display:none; position:fixed; inset:0; z-index:300;
-      background:rgba(0,0,0,0.85); backdrop-filter:blur(8px);
-      align-items:center; justify-content:center; padding:20px;
+    /* ===== IMPORT TAB ===== */
+    .import-layout { display:grid; grid-template-columns:1fr; gap:20px; max-width:800px; }
+    @media(min-width:900px) { .import-layout { grid-template-columns:1fr 1fr; } }
+
+    .imp-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:20px; padding:20px;
     }
-    #reject-modal.open { display:flex; }
-    .reject-box {
-      background:var(--card); border:1px solid rgba(255,59,48,0.3);
-      border-radius:24px; padding:28px 24px; width:100%; max-width:400px;
+    .imp-card-title {
+      font-size:14px; font-weight:900; margin-bottom:14px;
+      display:flex; align-items:center; gap:8px;
     }
-    .reject-title { font-size:17px; font-weight:900; color:var(--red); margin-bottom:6px; }
-    .reject-sub { font-size:13px; color:var(--sub); margin-bottom:16px; }
-    .reject-reason-box {
-      background:rgba(255,59,48,0.08); border:1px solid rgba(255,59,48,0.2);
-      border-radius:12px; padding:14px 16px; margin-bottom:16px;
-      font-size:13px; color:var(--red); font-weight:700; line-height:1.6;
+    .imp-step {
+      width:24px; height:24px; border-radius:50%;
+      background:rgba(48,209,88,0.15); color:var(--green);
+      border:1px solid rgba(48,209,88,0.3);
+      font-size:12px; font-weight:900;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
     }
-    .reject-actions { display:flex; gap:10px; }
-    .reject-confirm {
+    .imp-label { font-size:12px; color:var(--sub); margin-bottom:6px; display:block; }
+    .imp-input {
+      width:100%; padding:11px 14px; border-radius:12px;
+      border:1px solid var(--border); background:var(--item); color:var(--text);
+      font-family:'Cairo',sans-serif; font-size:14px; font-weight:700;
+      outline:none; transition:border-color 0.2s; direction:ltr; text-align:right;
+    }
+    .imp-input:focus { border-color:var(--green); }
+    .imp-textarea {
+      width:100%; padding:11px 14px; border-radius:12px;
+      border:1px solid var(--border); background:var(--item); color:var(--text);
+      font-family:'Cairo',sans-serif; font-size:13px;
+      outline:none; transition:border-color 0.2s; direction:rtl;
+      resize:vertical; min-height:200px; line-height:1.7;
+    }
+    .imp-textarea:focus { border-color:var(--green); }
+    .imp-hint {
+      font-size:11px; color:var(--sub); margin-top:8px; line-height:1.6;
+    }
+    .imp-hint strong { color:rgba(255,255,255,0.7); }
+
+    .imp-btn-row { display:flex; gap:10px; margin-top:16px; }
+    .imp-btn {
       flex:1; height:44px; border-radius:14px; border:none;
-      background:rgba(255,59,48,0.9); color:#fff;
-      font-family:'Cairo',sans-serif; font-size:15px; font-weight:900; cursor:pointer;
+      font-family:'Cairo',sans-serif; font-size:14px; font-weight:900;
+      cursor:pointer; transition:all 0.2s;
+      display:flex; align-items:center; justify-content:center; gap:8px;
     }
-    .reject-back {
-      height:44px; padding:0 18px; border-radius:14px;
-      border:1px solid var(--border); background:transparent; color:var(--sub);
-      font-family:'Cairo',sans-serif; font-size:14px; font-weight:700; cursor:pointer;
+    .imp-btn.parse { background:var(--item); color:var(--text); border:1px solid var(--border); }
+    .imp-btn.parse:hover { border-color:var(--gold-1); color:var(--gold-1); }
+    .imp-btn.submit { background:rgba(48,209,88,0.15); color:var(--green); border:1px solid rgba(48,209,88,0.3); }
+    .imp-btn.submit:hover:not(:disabled) { background:rgba(48,209,88,0.25); }
+    .imp-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+    /* preview */
+    .preview-wrap { margin-top:20px; max-width:800px; display:flex; flex-direction:column; gap:10px; }
+    .prev-section {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; overflow:hidden;
+    }
+    .prev-sec-head {
+      padding:10px 16px; background:var(--item);
+      display:flex; align-items:center; gap:10px;
+      font-size:13px; font-weight:900;
+    }
+    .prev-sec-badge {
+      padding:2px 10px; border-radius:20px; font-size:11px; font-weight:900;
+      background:rgba(10,132,255,0.12); color:var(--blue);
+      border:1px solid rgba(10,132,255,0.2); margin-right:auto;
+    }
+    .prev-sec-en { font-size:11px; color:var(--sub); font-style:italic; }
+    .prev-item {
+      padding:10px 16px; border-top:1px solid var(--border);
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .prev-item-name { font-size:13px; font-weight:900; }
+    .prev-item-en { font-size:11px; color:var(--sub); font-style:italic; }
+    .prev-item-desc { font-size:12px; color:var(--sub); }
+    .prev-item-prices { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+    .prev-price-pill {
+      font-size:11px; padding:2px 10px; border-radius:20px;
+      background:rgba(255,204,68,0.1); color:var(--gold-1);
+      border:1px solid rgba(255,204,68,0.2);
     }
 
-    /* ===== TOAST ===== */
-    #toast {
-      position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
-      background:var(--item); border:1px solid var(--border);
-      border-radius:16px; padding:12px 20px;
-      font-size:13px; font-weight:700;
-      display:flex; align-items:center; gap:8px;
-      z-index:400; transition:transform 0.3s ease;
-      backdrop-filter:blur(8px);
+    /* progress */
+    .prog-wrap { max-width:800px; margin-top:20px; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px 20px; display:none; }
+    .prog-wrap.show { display:block; }
+    .prog-title { font-size:13px; font-weight:900; margin-bottom:12px; }
+    .prog-list { display:flex; flex-direction:column; gap:6px; }
+    .prog-row { display:flex; align-items:center; gap:10px; font-size:12px; color:var(--sub); }
+    .prog-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; background:var(--border); }
+    .prog-dot.wait    { background:var(--border); }
+    .prog-dot.loading { background:var(--orange); animation:blink 0.8s infinite; }
+    .prog-dot.done    { background:var(--green); }
+    .prog-dot.error   { background:var(--red); }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* status */
+    .imp-status {
+      margin-top:14px; max-width:800px;
+      padding:12px 16px; border-radius:12px;
+      font-size:13px; font-weight:700; display:none;
     }
+    .imp-status.show { display:block; animation:fadeIn 0.2s ease; }
+    .imp-status.info    { background:rgba(10,132,255,0.1); color:var(--blue); border:1px solid rgba(10,132,255,0.2); }
+    .imp-status.success { background:rgba(48,209,88,0.1); color:var(--green); border:1px solid rgba(48,209,88,0.2); }
+    .imp-status.error   { background:rgba(255,59,48,0.1); color:var(--red); border:1px solid rgba(255,59,48,0.2); }
+    .imp-status.warn    { background:rgba(255,149,0,0.1); color:var(--orange); border:1px solid rgba(255,149,0,0.2); }
+
+    /* ===== MODALS ===== */
+    #reject-modal { display:none; position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px; }
+    #reject-modal.open { display:flex; }
+    .reject-box { background:var(--card); border:1px solid rgba(255,59,48,0.3); border-radius:24px; padding:28px 24px; width:100%; max-width:400px; }
+    .reject-title { font-size:17px; font-weight:900; color:var(--red); margin-bottom:6px; }
+    .reject-sub { font-size:13px; color:var(--sub); margin-bottom:16px; }
+    .reject-reason-box { background:rgba(255,59,48,0.08); border:1px solid rgba(255,59,48,0.2); border-radius:12px; padding:14px 16px; margin-bottom:16px; font-size:13px; color:var(--red); font-weight:700; line-height:1.6; }
+    .reject-actions { display:flex; gap:10px; }
+    .reject-confirm { flex:1; height:44px; border-radius:14px; border:none; background:rgba(255,59,48,0.9); color:#fff; font-family:'Cairo',sans-serif; font-size:15px; font-weight:900; cursor:pointer; }
+    .reject-back { height:44px; padding:0 18px; border-radius:14px; border:1px solid var(--border); background:transparent; color:var(--sub); font-family:'Cairo',sans-serif; font-size:14px; font-weight:700; cursor:pointer; }
+
+    #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--item); border:1px solid var(--border); border-radius:16px; padding:12px 20px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:8px; z-index:400; transition:transform 0.3s ease; backdrop-filter:blur(8px); }
     #toast.show { transform:translateX(-50%) translateY(0); }
     #toast.success { border-color:rgba(48,209,88,0.4); color:var(--green); }
     #toast.error   { border-color:rgba(255,59,48,0.4); color:var(--red); }
@@ -343,7 +300,6 @@
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div id="topbar">
   <div class="logo-sm">😋</div>
   <div class="topbar-title">لوحة الأدمن</div>
@@ -352,38 +308,27 @@
   <button class="logout-btn" onclick="doLogout()">خروج</button>
 </div>
 
-<!-- TABS -->
 <div class="tabs-wrap">
-  <button class="tab-btn tab-sub active" onclick="switchTab('sub')">🔑 تجديد الاشتراك</button>
-  <button class="tab-btn tab-menu" onclick="switchTab('menu')">📋 مراجعة المنيوهات</button>
+  <button class="tab-btn tab-sub active"    onclick="switchTab('sub')">🔑 تجديد الاشتراك</button>
+  <button class="tab-btn tab-menu"          onclick="switchTab('menu')">📋 مراجعة المنيوهات</button>
+  <button class="tab-btn tab-import"        onclick="switchTab('import')">➕ إضافة منيو</button>
 </div>
 
-<!-- ============================== -->
-<!-- TAB 1: SUBSCRIPTION            -->
-<!-- ============================== -->
+<!-- ===== TAB 1: SUBSCRIPTION ===== -->
 <div class="tab-content active" id="tab-sub">
   <div class="section-title">تجديد الاشتراك</div>
   <div class="section-sub">اختار نوع الخطة والمدة وبعدين اعمل generate للكود</div>
-
-  <!-- Plans -->
   <div class="sub-grid">
     <div class="sub-card selected" id="plan-1" onclick="selectPlan(1)">
-      <div class="plan-header">
-        <div class="plan-name">😋 الخطة الأساسية</div>
-        <div class="plan-check">✓</div>
-      </div>
+      <div class="plan-header"><div class="plan-name">😋 الخطة الأساسية</div><div class="plan-check">✓</div></div>
       <div class="plan-features">
         <div class="plan-feat"><span class="dot"></span>منيو ويب</div>
         <div class="plan-feat"><span class="dot"></span>داشبورد التطبيق</div>
         <div class="plan-feat"><span class="dot"></span>العرض داخل التطبيق</div>
       </div>
     </div>
-
     <div class="sub-card plan-2" id="plan-2" onclick="selectPlan(2)">
-      <div class="plan-header">
-        <div class="plan-name">🚀 الخطة المتقدمة</div>
-        <div class="plan-check"></div>
-      </div>
+      <div class="plan-header"><div class="plan-name">🚀 الخطة المتقدمة</div><div class="plan-check"></div></div>
       <div class="plan-features">
         <div class="plan-feat"><span class="dot"></span>منيو ويب</div>
         <div class="plan-feat"><span class="dot"></span>داشبورد التطبيق</div>
@@ -393,19 +338,15 @@
       </div>
     </div>
   </div>
-
-  <!-- Duration -->
   <div class="duration-wrap">
     <div class="duration-label">المدة</div>
     <div class="duration-grid">
-      <button class="dur-btn" onclick="selectDuration(this, 1)">شهر</button>
-      <button class="dur-btn selected" onclick="selectDuration(this, 3)">3 شهور</button>
-      <button class="dur-btn" onclick="selectDuration(this, 6)">6 شهور</button>
-      <button class="dur-btn" onclick="selectDuration(this, 12)">سنة</button>
+      <button class="dur-btn" onclick="selectDuration(this,1)">شهر</button>
+      <button class="dur-btn selected" onclick="selectDuration(this,3)">3 شهور</button>
+      <button class="dur-btn" onclick="selectDuration(this,6)">6 شهور</button>
+      <button class="dur-btn" onclick="selectDuration(this,12)">سنة</button>
     </div>
   </div>
-
-  <!-- Generate -->
   <div class="generate-wrap">
     <button class="generate-btn" id="gen-btn" onclick="generateCode()">
       <span id="gen-btn-text">⚡ Generate Code</span>
@@ -419,35 +360,91 @@
       <div class="code-meta" id="code-meta"></div>
     </div>
   </div>
-
-  <!-- History -->
   <div class="history-wrap">
     <div class="history-title">آخر الأكواد المُنشأة</div>
     <div class="history-list" id="history-list">
-      <div style="font-size:13px; color:var(--sub); text-align:center; padding:16px;">لا يوجد أكواد بعد</div>
+      <div style="font-size:13px;color:var(--sub);text-align:center;padding:16px;">لا يوجد أكواد بعد</div>
     </div>
   </div>
 </div>
 
-<!-- ============================== -->
-<!-- TAB 2: MENU REVIEW             -->
-<!-- ============================== -->
+<!-- ===== TAB 2: MENU REVIEW ===== -->
 <div class="tab-content" id="tab-menu">
   <div class="section-title">مراجعة المنيوهات</div>
   <div class="section-sub">المنيوهات دي في انتظار موافقتك عشان تتعرض للعملاء</div>
-
-  <div class="menu-loader" id="menu-loader">
-    <div class="ld-spinner"></div>
-    <div class="ld-text">جاري التحميل...</div>
-  </div>
-
-  <div class="menu-empty" id="menu-empty">
-    <div class="empty-icon">✅</div>
-    <div class="empty-title">مفيش منيوهات في الانتظار</div>
-    <div class="empty-sub">كل المنيوهات اتراجعت</div>
-  </div>
-
+  <div class="menu-loader" id="menu-loader"><div class="ld-spinner"></div><div class="ld-text">جاري التحميل...</div></div>
+  <div class="menu-empty" id="menu-empty"><div class="empty-icon">✅</div><div class="empty-title">مفيش منيوهات في الانتظار</div><div class="empty-sub">كل المنيوهات اتراجعت</div></div>
   <div class="menus-grid" id="menus-grid" style="display:none;"></div>
+</div>
+
+<!-- ===== TAB 3: IMPORT MENU ===== -->
+<div class="tab-content" id="tab-import">
+  <div class="section-title">➕ إضافة منيو</div>
+  <div class="section-sub">أضف منيو كامل لأي فرع عن طريق نص عربي — هيتترجم ويتحط تلقائياً</div>
+
+  <div class="import-layout">
+    <!-- Step 1: Branch ID -->
+    <div class="imp-card">
+      <div class="imp-card-title">
+        <div class="imp-step">1</div>
+        Branch ID الفرع
+      </div>
+      <label class="imp-label">ادخل الـ ID بتاع الفرع</label>
+      <input class="imp-input" id="imp-branch-id" placeholder="مثال: 6631a2b4f1e2c30012abc001" />
+      <p class="imp-hint">اضغط طويلاً على اسم الفرع في التطبيق لنسخ الـ ID تلقائياً</p>
+
+      <div style="margin-top:20px;">
+        <div class="imp-card-title" style="margin-bottom:10px;">
+          <div class="imp-step">2</div>
+          تنسيق النص
+        </div>
+        <div class="imp-hint" style="line-height:2;">
+          <strong>4 أسطر:</strong> اسم القسم / اسم الأكلة / الوصف / الأسعار<br>
+          <strong>3 أسطر:</strong> اسم الأكلة / الوصف / الأسعار (بدون قسم جديد)<br>
+          <strong>2 سطر:</strong> اسم الأكلة / الأسعار (بدون وصف)<br>
+          <strong>فصل الأقسام:</strong> سطر فارغ أو <code style="background:var(--item);padding:1px 6px;border-radius:4px;">----</code><br>
+          <strong>الأسعار:</strong> صغير 40 وسط 60 كبير 90 اكسترا 120
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Text input -->
+    <div class="imp-card">
+      <div class="imp-card-title">
+        <div class="imp-step">3</div>
+        نص المنيو
+      </div>
+      <label class="imp-label">اكتب المنيو هنا</label>
+      <textarea class="imp-textarea" id="imp-text" placeholder="مشويات
+بيف برجر
+برجر لحم بقري طازج مع خضروات وصوص مميز
+صغير 40 وسط 60 كبير 90
+
+كفتة مشوية
+صغير 35 وسط 55
+
+----
+
+مشروبات
+عصير برتقال
+عصير طازج معصور
+كبير 25 اكسترا 35
+
+مياه معدنية
+صغير 5 كبير 10"></textarea>
+      <div class="imp-btn-row">
+        <button class="imp-btn parse" onclick="impParse()">👁 معاينة</button>
+        <button class="imp-btn submit" id="imp-submit-btn" onclick="impSubmit()" disabled>✅ ترجم وأضف</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="imp-status" id="imp-status"></div>
+  <div class="prog-wrap" id="imp-prog-wrap">
+    <div class="prog-title">التقدم</div>
+    <div class="prog-list" id="imp-prog-list"></div>
+  </div>
+  <div class="preview-wrap" id="imp-preview"></div>
 </div>
 
 <!-- REJECT MODAL -->
@@ -455,9 +452,7 @@
   <div class="reject-box">
     <div class="reject-title">✖ رفض المنيو</div>
     <div class="reject-sub">هيتبعت للمطعم الرسالة دي:</div>
-    <div class="reject-reason-box">
-      ❌ لم يتم الموافقة على المنيو نظرًا لوجود صور أو مسميات غير لائقة. من فضلك راجع المحتوى وأعد الرفع.
-    </div>
+    <div class="reject-reason-box">❌ لم يتم الموافقة على المنيو نظرًا لوجود صور أو مسميات غير لائقة. من فضلك راجع المحتوى وأعد الرفع.</div>
     <div class="reject-actions">
       <button class="reject-confirm" onclick="confirmReject()">تأكيد الرفض</button>
       <button class="reject-back" onclick="closeRejectModal()">رجوع</button>
@@ -465,15 +460,14 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-const API   = 'https://potatoo-eight.vercel.app/api'
-const token = localStorage.getItem('pt_token')
+const API    = 'https://potatoo-eight.vercel.app/api'
+const REST   = API + '/restaurant'
+const token  = localStorage.getItem('pt_token')
 const ptUser = JSON.parse(localStorage.getItem('pt_user') || '{}')
 
-// حماية: لو مش admin → روح للـ login
 if (!token) window.location.replace('./login.html')
 if (ptUser.role !== 'admin') window.location.replace('./index.html')
 
@@ -487,26 +481,19 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'))
   document.getElementById('tab-' + tab).classList.add('active')
   document.querySelector('.tab-btn.tab-' + tab).classList.add('active')
-
-  if (tab === 'menu' && !menuLoaded) {
-    menuLoaded = true
-    loadPendingMenus()
-  }
+  if (tab === 'menu' && !menuLoaded) { menuLoaded = true; loadPendingMenus() }
 }
 
 // ============================================================
 // SUBSCRIPTION TAB
 // ============================================================
-let selectedPlan     = 1
-let selectedMonths   = 3
-let generatedCode    = null
-const codeHistory    = []
+let selectedPlan = 1, selectedMonths = 3, generatedCode = null
+const codeHistory = []
 
 function selectPlan(n) {
   selectedPlan = n
   document.getElementById('plan-1').classList.toggle('selected', n === 1)
   document.getElementById('plan-2').classList.toggle('selected', n === 2)
-  // check marks
   document.querySelector('#plan-1 .plan-check').textContent = n === 1 ? '✓' : ''
   document.querySelector('#plan-2 .plan-check').textContent = n === 2 ? '✓' : ''
   document.getElementById('code-result').classList.remove('show')
@@ -520,67 +507,37 @@ function selectDuration(el, months) {
 }
 
 async function generateCode() {
-  const btn     = document.getElementById('gen-btn')
-  const btnText = document.getElementById('gen-btn-text')
-
+  const btn = document.getElementById('gen-btn'), btnText = document.getElementById('gen-btn-text')
   btn.disabled = true
   btnText.innerHTML = `<span style="display:inline-block;width:16px;height:16px;border:2px solid #000;border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;"></span> جاري الإنشاء...`
-
   try {
-    const planName = selectedPlan === 1 ? 'basic' : 'advanced'
-    
     const res = await fetch(`${API}/admin/subscription/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        plan: planName,
-        months: selectedMonths
-      })
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({ plan: selectedPlan===1?'basic':'advanced', months: selectedMonths })
     })
-
     const data = await res.json()
-
-    if (!data.success) {
-      showToast('فشل إنشاء الكود: ' + data.message, 'error')
-      return
-    }
-
+    if (!data.success) { showToast('فشل: ' + data.message, 'error'); return }
     generatedCode = data.data.code
-
-    const planLabel = selectedPlan === 1 ? 'الأساسية' : 'المتقدمة'
-    const durLabel  = selectedMonths === 1 ? 'شهر' : selectedMonths === 12 ? 'سنة' : `${selectedMonths} شهور`
-
+    const planLabel = selectedPlan===1?'الأساسية':'المتقدمة'
+    const durLabel  = selectedMonths===1?'شهر':selectedMonths===12?'سنة':`${selectedMonths} شهور`
     document.getElementById('code-val').textContent  = generatedCode
     document.getElementById('code-meta').textContent = `الخطة: ${planLabel} — المدة: ${durLabel} — صالح للاستخدام مرة واحدة`
-
     document.getElementById('code-result').classList.add('show')
-
-    codeHistory.unshift({ code: generatedCode, plan: planLabel, dur: durLabel, used: false, time: new Date() })
+    codeHistory.unshift({ code:generatedCode, plan:planLabel, dur:durLabel, used:false, time:new Date() })
     renderHistory()
-
-    showToast('✅ تم إنشاء الكود وحفظه', 'success')
-
-  } catch(e) {
-    showToast('حدث خطأ: ' + e.message, 'error')
-  } finally {
-    btn.disabled = false
-    btnText.textContent = '⚡ Generate Code'
-  }
+    showToast('✅ تم إنشاء الكود', 'success')
+  } catch(e) { showToast('خطأ: ' + e.message, 'error') }
+  finally { btn.disabled=false; btnText.textContent='⚡ Generate Code' }
 }
+
 function renderHistory() {
   const list = document.getElementById('history-list')
-  if (!codeHistory.length) {
-    list.innerHTML = '<div style="font-size:13px;color:var(--sub);text-align:center;padding:16px;">لا يوجد أكواد بعد</div>'
-    return
-  }
-  list.innerHTML = codeHistory.slice(0, 10).map(h => `
+  if (!codeHistory.length) { list.innerHTML='<div style="font-size:13px;color:var(--sub);text-align:center;padding:16px;">لا يوجد أكواد بعد</div>'; return }
+  list.innerHTML = codeHistory.slice(0,10).map(h=>`
     <div class="history-item">
       <div class="hist-code">${h.code}</div>
       <div class="hist-meta">${h.plan} — ${h.dur}<br/>${formatTime(h.time)}</div>
-      <span class="hist-badge ${h.used ? 'used' : 'unused'}">${h.used ? 'مستخدم' : 'غير مستخدم'}</span>
+      <span class="hist-badge ${h.used?'used':'unused'}">${h.used?'مستخدم':'غير مستخدم'}</span>
     </div>`).join('')
 }
 
@@ -588,94 +545,52 @@ function copyCode() {
   if (!generatedCode) return
   navigator.clipboard.writeText(generatedCode).then(() => {
     const btn = document.getElementById('copy-btn')
-    btn.textContent = '✅ تم النسخ'
-    btn.classList.add('copied')
-    setTimeout(() => { btn.textContent = '📋 نسخ'; btn.classList.remove('copied') }, 2000)
+    btn.textContent='✅ تم النسخ'; btn.classList.add('copied')
+    setTimeout(()=>{ btn.textContent='📋 نسخ'; btn.classList.remove('copied') }, 2000)
   })
 }
 
 // ============================================================
 // MENU REVIEW TAB
 // ============================================================
-let pendingMenus   = []
-let rejectTargetId = null
+let pendingMenus = [], rejectTargetId = null
 
 async function loadPendingMenus() {
   document.getElementById('menu-loader').style.display = 'flex'
-  
   try {
-    const res = await fetch(`${API}/admin/pending-menus`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
+    const res  = await fetch(`${API}/admin/pending-menus`, { headers:{'Authorization':`Bearer ${token}`} })
     const data = await res.json()
-    
-    pendingMenus = (data.data || []).map(b => ({
+    pendingMenus = (data.data||[]).map(b=>({
       _id: b._id,
-      branch: { _id: b._id, arabicName: b.arabicName },
-      sections: JSON.parse(b.pendingMenu || '[]').map(s => s.arabicName || s.englishName),
-      itemsCount: JSON.parse(b.pendingMenu || '[]').reduce((acc, s) => acc + (s.items?.length || 0), 0),
-      updatedAt: b.updatedAt || new Date().toISOString()
+      branch: { _id:b._id, arabicName:b.arabicName },
+      sections: JSON.parse(b.pendingMenu||'[]').map(s=>s.arabicName||s.englishName),
+      itemsCount: JSON.parse(b.pendingMenu||'[]').reduce((acc,s)=>acc+(s.items?.length||0),0),
+      updatedAt: b.updatedAt||new Date().toISOString()
     }))
-    
     renderMenus()
   } catch(e) {
-    showToast('فشل التحميل', 'error')
-    document.getElementById('menu-loader').style.display = 'none'
+    showToast('فشل التحميل','error')
+    document.getElementById('menu-loader').style.display='none'
   }
-}
-
-function getMockMenus() {
-  return [
-    {
-      _id: '6631a2b4f1e2c30012abc001',
-      branch: { _id: '001', arabicName: 'الخديوي — فرع المهندسين' },
-      sections: ['وجبات رئيسية','مشروبات','سلطات'],
-      itemsCount: 24,
-      updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      _id: '6631a2b4f1e2c30012abc002',
-      branch: { _id: '002', arabicName: 'حواوشي الملوك — فرع المعادي' },
-      sections: ['حواوشي','أكلات','مشروبات'],
-      itemsCount: 18,
-      updatedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      _id: '6631a2b4f1e2c30012abc003',
-      branch: { _id: '003', arabicName: 'بيتزا هت — فرع مدينة نصر' },
-      sections: ['بيتزا','باستا','مشروبات','ديسيرت'],
-      itemsCount: 35,
-      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-    },
-  ]
 }
 
 function renderMenus() {
-  document.getElementById('menu-loader').style.display = 'none'
+  document.getElementById('menu-loader').style.display='none'
   const grid = document.getElementById('menus-grid')
-
-  if (!pendingMenus.length) {
-    document.getElementById('menu-empty').classList.add('show')
-    return
-  }
-
-  grid.style.display = 'grid'
-  grid.innerHTML = pendingMenus.map(m => buildMenuCard(m)).join('')
+  if (!pendingMenus.length) { document.getElementById('menu-empty').classList.add('show'); return }
+  grid.style.display='grid'
+  grid.innerHTML = pendingMenus.map(m=>buildMenuCard(m)).join('')
 }
 
 function buildMenuCard(m) {
-  const branchName  = m.branch?.arabicName || m.branch?.englishName || '—'
-  const shortId     = m._id.slice(-8).toUpperCase()
-  const time        = formatTime(m.updatedAt)
-  const sectionsHtml = (m.sections || []).map(s =>
-    `<span class="section-tag">${s}</span>`).join('')
-
+  const branchName = m.branch?.arabicName||m.branch?.englishName||'—'
+  const sectionsHtml = (m.sections||[]).map(s=>`<span class="section-tag">${s}</span>`).join('')
   return `<div class="menu-card" id="menu-card-${m._id}">
     <div class="menu-card-header">
       <div class="pending-dot"></div>
       <div class="menu-branch-name">${branchName}</div>
-      <div class="menu-id-badge">${shortId}</div>
-      <div class="menu-time">${time}</div>
+      <div class="menu-id-badge">${m._id.slice(-8).toUpperCase()}</div>
+      <div class="menu-time">${formatTime(m.updatedAt)}</div>
     </div>
     <div class="menu-preview">
       <div class="menu-preview-label">الأقسام</div>
@@ -686,182 +601,332 @@ function buildMenuCard(m) {
     <div class="menu-actions">
       <button class="approve-btn" onclick="approveMenu('${m._id}')">✔ موافقة</button>
       <button class="reject-btn"  onclick="openRejectModal('${m._id}')">✖ رفض</button>
-      <button class="view-btn"    onclick="viewMenu('${m._id}')" title="عرض المنيو">👁</button>
+      <button class="view-btn"    onclick="viewMenu('${m._id}')">👁</button>
     </div>
   </div>`
 }
 
 async function approveMenu(id) {
-  const card = document.getElementById('menu-card-' + id)
-  if (card) {
-    card.querySelectorAll('button').forEach(b => b.disabled = true)
-    card.style.opacity = '0.6'
-  }
-
+  const card = document.getElementById('menu-card-'+id)
+  if (card) { card.querySelectorAll('button').forEach(b=>b.disabled=true); card.style.opacity='0.6' }
   try {
-    const res = await fetch(`${API}/admin/approve-menu/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-
-    if (!res.ok) {
-      throw new Error('Approve failed')
-    }
-
-    pendingMenus = pendingMenus.filter(m => m._id !== id)
-
-    if (card) {
-      card.style.transition = 'all 0.3s ease'
-      card.style.opacity = '0'
-      card.style.transform = 'scale(0.95)'
-      setTimeout(() => { card.remove(); checkEmpty() }, 300)
-    }
-    showToast('✅ تم الموافقة على المنيو', 'success')
-  } catch(e) {
-    showToast('فشل الموافقة', 'error')
-    if (card) { card.querySelectorAll('button').forEach(b => b.disabled = false); card.style.opacity = '1' }
-  }
+    const res = await fetch(`${API}/admin/approve-menu/${id}`, { method:'PUT', headers:{'Authorization':`Bearer ${token}`} })
+    if (!res.ok) throw new Error()
+    pendingMenus = pendingMenus.filter(m=>m._id!==id)
+    if (card) { card.style.transition='all 0.3s'; card.style.opacity='0'; card.style.transform='scale(0.95)'; setTimeout(()=>{card.remove();checkEmpty()},300) }
+    showToast('✅ تم الموافقة','success')
+  } catch { showToast('فشل الموافقة','error'); if(card){card.querySelectorAll('button').forEach(b=>b.disabled=false);card.style.opacity='1'} }
 }
 
-function openRejectModal(id) {
-  rejectTargetId = id
-  document.getElementById('reject-modal').classList.add('open')
-}
-
-function closeRejectModal() {
-  rejectTargetId = null
-  document.getElementById('reject-modal').classList.remove('open')
-}
+function openRejectModal(id) { rejectTargetId=id; document.getElementById('reject-modal').classList.add('open') }
+function closeRejectModal() { rejectTargetId=null; document.getElementById('reject-modal').classList.remove('open') }
 
 async function confirmReject() {
   if (!rejectTargetId) return
-  const id   = rejectTargetId
-  const card = document.getElementById('menu-card-' + id)
-
+  const id=rejectTargetId, card=document.getElementById('menu-card-'+id)
   closeRejectModal()
-
-  if (card) {
-    card.querySelectorAll('button').forEach(b => b.disabled = true)
-    card.style.opacity = '0.6'
-  }
-
+  if (card) { card.querySelectorAll('button').forEach(b=>b.disabled=true); card.style.opacity='0.6' }
   try {
-    const res = await fetch(`${API}/admin/reject-menu/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-
-    if (!res.ok) {
-      throw new Error('Reject failed')
-    }
-
-    pendingMenus = pendingMenus.filter(m => m._id !== id)
-
-    if (card) {
-      card.style.transition = 'all 0.3s ease'
-      card.style.opacity = '0'
-      card.style.transform = 'scale(0.95)'
-      setTimeout(() => { card.remove(); checkEmpty() }, 300)
-    }
-    showToast('✖ تم رفض المنيو وإرسال الرسالة', 'info')
-  } catch(e) {
-    showToast('فشل الرفض', 'error')
-    if (card) { card.querySelectorAll('button').forEach(b => b.disabled = false); card.style.opacity = '1' }
-  }
+    const res = await fetch(`${API}/admin/reject-menu/${id}`, { method:'PUT', headers:{'Authorization':`Bearer ${token}`} })
+    if (!res.ok) throw new Error()
+    pendingMenus = pendingMenus.filter(m=>m._id!==id)
+    if (card) { card.style.transition='all 0.3s'; card.style.opacity='0'; card.style.transform='scale(0.95)'; setTimeout(()=>{card.remove();checkEmpty()},300) }
+    showToast('✖ تم الرفض','info')
+  } catch { showToast('فشل الرفض','error'); if(card){card.querySelectorAll('button').forEach(b=>b.disabled=false);card.style.opacity='1'} }
 }
 
 function viewMenu(id) {
-  const m = pendingMenus.find(x => x._id === id)
-  if (!m) return
-
-  // جيب الـ raw pendingMenu من الـ API مباشرة
-  fetch(`${API}/admin/pending-menus`, {
-    headers: { 'Authorization': `Bearer ${token}` }
-  })
-  .then(r => r.json())
-  .then(data => {
-    const branch = (data.data || []).find(b => b._id === id)
-    if (!branch) return
-
-    let sections = []
-    try { sections = JSON.parse(branch.pendingMenu || '[]') } catch {}
-
-    const branchName = branch.arabicName || branch.englishName || '—'
-
-    const sectionsHtml = sections.map(s => {
-      const sName = s.arabicName || s.englishName || '—'
-      const sImg  = s.image?.url ? `<img src="${s.image.url}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;" />` : ''
-
-      const itemsHtml = (s.items || []).map(item => {
-        const iName = item.arabicName || item.englishName || '—'
-        const iImg  = item.image?.url
-          ? `<img src="${item.image.url}" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" />`
-          : `<div style="width:48px;height:48px;border-radius:10px;background:var(--item);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🍽</div>`
-
-        const priceFields = ['smallPrice','mediumPrice','largePrice','xlPrice','mealPrice','singlePrice','familyPrice','piecePrice','boxPrice','comboPrice','regularPrice','sandwichPrice']
-        const priceLabels = {smallPrice:'S',mediumPrice:'M',largePrice:'L',xlPrice:'XL',mealPrice:'وجبة',singlePrice:'سنجل',familyPrice:'عائلي',piecePrice:'قطعة',boxPrice:'بوكس',comboPrice:'كومبو',regularPrice:'عادي',sandwichPrice:'ساندوتش'}
-        const prices = priceFields
-          .filter(f => item[f] != null)
-          .map(f => `<span style="background:rgba(255,204,68,0.12);color:var(--gold-1);padding:2px 8px;border-radius:6px;font-size:11px;font-weight:900;">${priceLabels[f]}: ${item[f]}</span>`)
-          .join('')
-
-        return `
-          <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);">
-            ${iImg}
-            <div style="flex:1;">
-              <div style="font-size:13px;font-weight:900;margin-bottom:4px;">${iName}</div>
-              ${item.arabicDescription ? `<div style="font-size:11px;color:var(--sub);margin-bottom:6px;">${item.arabicDescription}</div>` : ''}
-              <div style="display:flex;flex-wrap:wrap;gap:4px;">${prices}</div>
-            </div>
-          </div>`
+  fetch(`${API}/admin/pending-menus`,{headers:{'Authorization':`Bearer ${token}`}})
+  .then(r=>r.json()).then(data=>{
+    const branch=(data.data||[]).find(b=>b._id===id); if(!branch) return
+    let sections=[]; try{sections=JSON.parse(branch.pendingMenu||'[]')}catch{}
+    const branchName=branch.arabicName||branch.englishName||'—'
+    const sectionsHtml=sections.map(s=>{
+      const sName=s.arabicName||s.englishName||'—'
+      const sImg=s.image?.url?`<img src="${s.image.url}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;"/>`:'';
+      const itemsHtml=(s.items||[]).map(item=>{
+        const iName=item.arabicName||item.englishName||'—'
+        const iImg=item.image?.url?`<img src="${item.image.url}" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;"/>`:`<div style="width:48px;height:48px;border-radius:10px;background:var(--item);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🍽</div>`
+        const pFields=['smallPrice','mediumPrice','largePrice','xlPrice','mealPrice','singlePrice','familyPrice','piecePrice','boxPrice','comboPrice','regularPrice','sandwichPrice']
+        const pLabels={smallPrice:'S',mediumPrice:'M',largePrice:'L',xlPrice:'XL',mealPrice:'وجبة',singlePrice:'سنجل',familyPrice:'عائلي',piecePrice:'قطعة',boxPrice:'بوكس',comboPrice:'كومبو',regularPrice:'عادي',sandwichPrice:'ساندوتش'}
+        const prices=pFields.filter(f=>item[f]!=null).map(f=>`<span style="background:rgba(255,204,68,0.12);color:var(--gold-1);padding:2px 8px;border-radius:6px;font-size:11px;font-weight:900;">${pLabels[f]}: ${item[f]}</span>`).join('')
+        return `<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);">${iImg}<div style="flex:1;"><div style="font-size:13px;font-weight:900;margin-bottom:4px;">${iName}</div>${item.arabicDescription?`<div style="font-size:11px;color:var(--sub);margin-bottom:6px;">${item.arabicDescription}</div>`:''}<div style="display:flex;flex-wrap:wrap;gap:4px;">${prices}</div></div></div>`
       }).join('')
-
-      return `
-        <div style="background:var(--item);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-            ${sImg}
-            <div style="font-size:15px;font-weight:900;">${sName}</div>
-            <span style="margin-right:auto;font-size:11px;color:var(--sub);">${(s.items||[]).length} عنصر</span>
-          </div>
-          ${itemsHtml || '<div style="font-size:12px;color:var(--sub);text-align:center;padding:8px;">لا يوجد عناصر</div>'}
-        </div>`
+      return `<div style="background:var(--item);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">${sImg}<div style="font-size:15px;font-weight:900;">${sName}</div><span style="margin-right:auto;font-size:11px;color:var(--sub);">${(s.items||[]).length} عنصر</span></div>${itemsHtml||'<div style="font-size:12px;color:var(--sub);text-align:center;padding:8px;">لا يوجد عناصر</div>'}</div>`
     }).join('')
-
-    // حط الـ modal في الـ DOM
-    let modal = document.getElementById('view-modal')
-    if (!modal) {
-      modal = document.createElement('div')
-      modal.id = 'view-modal'
-      modal.style.cssText = 'display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.9);backdrop-filter:blur(8px);overflow-y:auto;padding:20px;'
-      document.body.appendChild(modal)
-    }
-
-    modal.innerHTML = `
-      <div style="max-width:600px;margin:0 auto;">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;position:sticky;top:0;background:rgba(14,14,14,0.95);padding:12px 0;backdrop-filter:blur(8px);">
-          <div style="font-size:17px;font-weight:900;flex:1;">👁 ${branchName}</div>
-          <button onclick="document.getElementById('view-modal').style.display='none'"
-            style="padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--sub);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">
-            ✕ إغلاق
-          </button>
-        </div>
-        ${sectionsHtml || '<div style="text-align:center;color:var(--sub);padding:40px;">لا يوجد محتوى</div>'}
-      </div>`
-
-    modal.style.display = 'block'
-  })
-  .catch(() => showToast('فشل تحميل المنيو', 'error'))
+    let modal=document.getElementById('view-modal')
+    if (!modal) { modal=document.createElement('div'); modal.id='view-modal'; modal.style.cssText='display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.9);backdrop-filter:blur(8px);overflow-y:auto;padding:20px;'; document.body.appendChild(modal) }
+    modal.innerHTML=`<div style="max-width:600px;margin:0 auto;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;position:sticky;top:0;background:rgba(14,14,14,0.95);padding:12px 0;backdrop-filter:blur(8px);"><div style="font-size:17px;font-weight:900;flex:1;">👁 ${branchName}</div><button onclick="document.getElementById('view-modal').style.display='none'" style="padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--sub);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✕ إغلاق</button></div>${sectionsHtml||'<div style="text-align:center;color:var(--sub);padding:40px;">لا يوجد محتوى</div>'}</div>`
+    modal.style.display='block'
+  }).catch(()=>showToast('فشل تحميل المنيو','error'))
 }
 
 function checkEmpty() {
-  if (!pendingMenus.length) {
-    document.getElementById('menu-empty').classList.add('show')
-    document.getElementById('menus-grid').style.display = 'none'
+  if (!pendingMenus.length) { document.getElementById('menu-empty').classList.add('show'); document.getElementById('menus-grid').style.display='none' }
+}
+
+// ============================================================
+// IMPORT MENU TAB
+// ============================================================
+const AR_SIZE_MAP = {
+  'صغير':'S','وسط':'M','كبير':'L','اكسترا':'XL','اكستره':'XL',
+  'وجبه':'Meal','وجبة':'Meal','قطعة':'Piece','قطعه':'Piece',
+  'بوكس':'Box','سنجل':'Single','دبل':'Double','كومبو':'Combo',
+  'عادي':'Regular','عائلي':'Family','ساندوتش':'Sandwich','سوبر':'Super',
+  'ورك':'Thigh','صدر':'Breast','مثلج':'Cold','ساخن':'Hot','مقلي':'Fried',
+  'مشوي':'Grilled','بلدي':'Baladi','صاج':'Saj','فينو':'Fino',
+  'كيزر':'Buns','تورتيلا':'Tortilla','توست':'Toast','لحمه':'Beef',
+  'فراخ':'Chicken','جبن':'Cheese','ميكس':'Mix','بروست':'Broest',
+  'شامي':'Shami','فرنساوي':'French','سوري':'Syrian','طلب':'Talab',
+  'كيلو':'1KG','1كيلو':'1KG','1/2':'1/2','1/4':'1/4','1/3':'1/3','1/8':'1/8',
+}
+
+const SIZE_TO_FIELD = {
+  S:'smallPrice',M:'mediumPrice',L:'largePrice',XL:'xlPrice',
+  '1/8':'quarterKgPrice','1/4':'halfKgPrice','1/3':'thirdKgPrice','1/2':'oneKgPrice',
+  '1KG':'portionPrice',Talab:'mealPrice',Shami:'platePrice',French:'singlePrice',
+  Syrian:'familyPrice',Grilled:'grilledPrice',Baladi:'baladiPrice',Saj:'sajPrice',
+  Fino:'finoPrice',Buns:'bunsPrice',Tortilla:'tortillaPrice',Toast:'toastPrice',
+  Beef:'beefPrice',Chicken:'chickenPrice',Cheese:'cheesePrice',SeaFood:'seafoodPrice',
+  Mix:'mixPrice',Broest:'broestPrice',Meal:'todayPrice',Piece:'piecePrice',
+  Box:'boxPrice',Single:'singleItemPrice',Double:'doublePrice',Combo:'comboPrice',
+  Regular:'regularPrice',Fardi:'fardiPrice',Family:'familyItemPrice',
+  Sandwich:'sandwichPrice',Super:'superPrice',Thigh:'workPrice',
+  Breast:'breastPrice',Cold:'coldPrice',Hot:'hotPrice',Fried:'friedPrice'
+}
+
+let impParsedData = []
+
+function impSetStatus(msg, type) {
+  const el = document.getElementById('imp-status')
+  el.textContent = msg
+  el.className = 'imp-status show ' + type
+}
+
+function looksLikePriceLine(line) {
+  return Object.keys(AR_SIZE_MAP).some(k => line.includes(k)) && /\d/.test(line)
+}
+
+function parsePrices(line) {
+  const sizes = {}, parts = line.trim().split(/\s+/)
+  let i = 0
+  while (i < parts.length) {
+    const key = AR_SIZE_MAP[parts[i]]
+    if (key && i+1 < parts.length && /^\d+$/.test(parts[i+1])) {
+      sizes[key] = parts[i+1]; i += 2
+    } else { i++ }
   }
+  return sizes
+}
+
+function parseItemsFromLines(lines, sec) {
+  let i = 0
+  while (i < lines.length) {
+    const line = lines[i]
+    if (looksLikePriceLine(line)) { i++; continue }
+    const nameAr = line
+    let descAr = '', pricesLine = ''
+    if (i+2 < lines.length && !looksLikePriceLine(lines[i+1]) && looksLikePriceLine(lines[i+2])) {
+      descAr = lines[i+1]; pricesLine = lines[i+2]; i += 3
+    } else if (i+1 < lines.length && looksLikePriceLine(lines[i+1])) {
+      pricesLine = lines[i+1]; i += 2
+    } else { i++; continue }
+    const sizes = parsePrices(pricesLine)
+    if (Object.keys(sizes).length) sec.items.push({ nameAr, descAr, sizes })
+  }
+}
+
+function impParse() {
+  const raw = document.getElementById('imp-text').value.trim()
+  if (!raw) { impSetStatus('اكتب نص المنيو أولاً','warn'); return }
+
+  const blocks = raw.split(/\n{2,}|^-{3,}$/m).map(b=>b.trim()).filter(Boolean)
+  impParsedData = []
+  let currentSection = null
+
+  for (const block of blocks) {
+    const lines = block.split('\n').map(l=>l.trim()).filter(Boolean)
+    if (!lines.length) continue
+
+    let sectionName = null
+
+    if (lines.length >= 4 && !looksLikePriceLine(lines[0])) {
+      sectionName = lines[0]
+    }
+
+    if (sectionName && sectionName !== currentSection) {
+      currentSection = sectionName
+      impParsedData.push({ sectionAr: sectionName, sectionEn:'', items:[] })
+    }
+
+    if (!impParsedData.length) impParsedData.push({ sectionAr:'منيو', sectionEn:'', items:[] })
+
+    const sec = impParsedData[impParsedData.length - 1]
+    const startIdx = sectionName ? 1 : 0
+    parseItemsFromLines(lines.slice(startIdx), sec)
+  }
+
+  const totalItems = impParsedData.reduce((a,s)=>a+s.items.length,0)
+  if (!totalItems) { impSetStatus('لم يتم التعرف على أي أكلات — تأكد من التنسيق','error'); return }
+
+  renderImpPreview()
+  document.getElementById('imp-submit-btn').disabled = false
+  impSetStatus(`تم التعرف على ${totalItems} أكلة في ${impParsedData.length} قسم — اضغط "ترجم وأضف" للمتابعة`, 'info')
+}
+
+function renderImpPreview() {
+  document.getElementById('imp-preview').innerHTML = impParsedData.map(sec => `
+    <div class="prev-section">
+      <div class="prev-sec-head">
+        📂 ${sec.sectionAr}
+        ${sec.sectionEn ? `<span class="prev-sec-en">${sec.sectionEn}</span>` : ''}
+        <span class="prev-sec-badge">${sec.items.length} أكلة</span>
+      </div>
+      ${sec.items.map(item=>`
+        <div class="prev-item">
+          <div class="prev-item-name">${item.nameAr} ${item.nameEn?`<span class="prev-item-en">${item.nameEn}</span>`:''}</div>
+          ${item.descAr?`<div class="prev-item-desc">${item.descAr}</div>`:''}
+          <div class="prev-item-prices">
+            ${Object.entries(item.sizes).map(([k,v])=>`<span class="prev-price-pill">${k}: ${v}</span>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>`).join('')
+}
+
+async function callClaude(prompt) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 300,
+      messages: [{ role:'user', content: prompt }]
+    })
+  })
+  const d = await res.json()
+  return (d.content?.[0]?.text || '').trim()
+}
+
+async function translateSection(arName) {
+  const r = await callClaude(`Translate this Arabic restaurant section name to English. Reply with ONLY the translation, nothing else.\nArabic: ${arName}`)
+  return r.replace(/^["']|["']$/g,'').trim()
+}
+
+async function translateItem(arName, arDesc) {
+  const prompt = `Translate to English for a restaurant menu. Reply with JSON only, no markdown.\nName: ${arName}\nDescription: ${arDesc||''}\nFormat: {"name":"...","description":"..."}`
+  const r = await callClaude(prompt)
+  try { return JSON.parse(r.replace(/```json|```/g,'').trim()) }
+  catch { return { name: arName, description: arDesc||'' } }
+}
+
+function setProgDot(id, state, text) {
+  const el = document.getElementById('pd-'+id)
+  if (!el) return
+  el.querySelector('.prog-dot').className = 'prog-dot ' + state
+  el.querySelector('.pd-txt').textContent  = text
+}
+
+async function impSubmit() {
+  const branchId = document.getElementById('imp-branch-id').value.trim()
+  if (!branchId) { impSetStatus('أدخل Branch ID أولاً','warn'); return }
+  if (!impParsedData.length) { impSetStatus('اعمل معاينة أولاً','warn'); return }
+
+  document.getElementById('imp-submit-btn').disabled = true
+  document.querySelector('.imp-btn.parse').disabled = true
+
+  const progWrap = document.getElementById('imp-prog-wrap')
+  const progList = document.getElementById('imp-prog-list')
+  progWrap.classList.add('show')
+  progList.innerHTML = ''
+
+  const addRow = (id, label) => {
+    progList.innerHTML += `<div class="prog-row" id="pd-${id}"><div class="prog-dot wait"></div><span class="pd-txt">${label}</span></div>`
+  }
+
+  impParsedData.forEach((sec, si) => {
+    addRow(`s${si}`, `قسم: ${sec.sectionAr}`)
+    sec.items.forEach((item, ii) => addRow(`i${si}_${ii}`, `  ↳ ${item.nameAr}`))
+  })
+
+  impSetStatus('جاري الترجمة والإضافة... لا تغلق الصفحة', 'info')
+
+  let okCount = 0, errCount = 0
+
+  for (let si = 0; si < impParsedData.length; si++) {
+    const sec = impParsedData[si]
+    setProgDot(`s${si}`, 'loading', `ترجمة: ${sec.sectionAr}...`)
+
+    const enName = await translateSection(sec.sectionAr)
+    sec.sectionEn = enName
+
+    const fd = new FormData()
+    fd.append('arabicName', sec.sectionAr)
+    fd.append('englishName', enName)
+
+    let sectionId = null
+    try {
+      const r    = await fetch(`${REST}/add-section/${branchId}`, { method:'POST', headers:{Authorization:`Bearer ${token}`}, body:fd })
+      const data = await r.json()
+      if (data.success) {
+        sectionId = data.data?._id || data.data?.section?._id
+        setProgDot(`s${si}`, 'done', `✓ ${sec.sectionAr} → ${enName}`)
+      } else {
+        setProgDot(`s${si}`, 'error', `✗ ${sec.sectionAr}: ${data.message||'فشل'}`)
+        for (let ii = 0; ii < sec.items.length; ii++) setProgDot(`i${si}_${ii}`, 'error', 'تخطي')
+        errCount++; continue
+      }
+    } catch {
+      setProgDot(`s${si}`, 'error', `✗ خطأ في الشبكة`)
+      errCount++; continue
+    }
+
+    for (let ii = 0; ii < sec.items.length; ii++) {
+      const item = sec.items[ii]
+      setProgDot(`i${si}_${ii}`, 'loading', `ترجمة: ${item.nameAr}...`)
+
+      const tr = await translateItem(item.nameAr, item.descAr)
+      item.nameEn = tr.name
+      item.descEn = tr.description
+
+      const ifd = new FormData()
+      ifd.append('arabicName', item.nameAr)
+      ifd.append('englishName', item.nameEn)
+      if (item.descAr) ifd.append('arabicDescription', item.descAr)
+      if (item.descEn) ifd.append('englishDescription', item.descEn)
+
+      for (const [key, val] of Object.entries(item.sizes)) {
+        const field = SIZE_TO_FIELD[key]
+        if (field) ifd.append(field, val)
+      }
+
+      try {
+        const r    = await fetch(`${REST}/add-item/${sectionId}`, { method:'POST', headers:{Authorization:`Bearer ${token}`}, body:ifd })
+        const data = await r.json()
+        if (data.success) {
+          setProgDot(`i${si}_${ii}`, 'done', `✓ ${item.nameAr} → ${item.nameEn}`)
+          okCount++
+        } else {
+          setProgDot(`i${si}_${ii}`, 'error', `✗ ${item.nameAr}: ${data.message||'فشل'}`)
+          errCount++
+        }
+      } catch {
+        setProgDot(`i${si}_${ii}`, 'error', `✗ خطأ في الشبكة`)
+        errCount++
+      }
+    }
+  }
+
+  renderImpPreview()
+
+  if (errCount === 0) {
+    impSetStatus(`✅ تم إضافة ${okCount} أكلة في ${impParsedData.length} قسم بنجاح`, 'success')
+    showToast(`✅ تم الإضافة: ${okCount} أكلة`, 'success')
+  } else {
+    impSetStatus(`${okCount} نجح / ${errCount} فشل — راجع التفاصيل`, 'warn')
+  }
+
+  document.querySelector('.imp-btn.parse').disabled = false
+  document.getElementById('imp-submit-btn').disabled = false
 }
 
 // ============================================================
@@ -869,22 +934,19 @@ function checkEmpty() {
 // ============================================================
 function formatTime(iso) {
   if (!iso) return ''
-  const d    = new Date(iso)
-  const now  = new Date()
-  const diff = Math.floor((now - d) / 60000)
-  if (diff < 1)    return 'الآن'
-  if (diff < 60)   return `منذ ${diff} دقيقة`
-  if (diff < 1440) return `منذ ${Math.floor(diff/60)} ساعة`
+  const d=new Date(iso), now=new Date(), diff=Math.floor((now-d)/60000)
+  if (diff<1) return 'الآن'
+  if (diff<60) return `منذ ${diff} دقيقة`
+  if (diff<1440) return `منذ ${Math.floor(diff/60)} ساعة`
   return d.toLocaleDateString('ar-EG')
 }
 
-let toastTimer = null
-function showToast(msg, type = 'info') {
-  const toast = document.getElementById('toast')
-  toast.textContent = msg
-  toast.className   = `show ${type}`
+let toastTimer=null
+function showToast(msg, type='info') {
+  const toast=document.getElementById('toast')
+  toast.textContent=msg; toast.className=`show ${type}`
   clearTimeout(toastTimer)
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000)
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),3500)
 }
 
 function doLogout() {
