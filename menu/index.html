@@ -530,30 +530,14 @@ function buildItemCard(item) {
     ? `<img class="item-img" src="${imgUrl}" alt="${name}" loading="lazy" onerror="this.style.display='none'" />`
     : '';
 
-  // inline add button + size select
   let inlineAddHtml = '';
-  let sizeSelectInline = '';
+let sizeSelectInline = '';
 
- if (sizes.length > 0 && branchData?.whatsApp) {
+if (sizes.length > 0 && branchData?.whatsApp) {
   const itemId = item._id || item.id || name;
-
-    if (sizes.length === 1) {
-      const s = sizes[0];
-      inlineAddHtml = `<button class="add-btn-inline"
-        onclick="addToCart('${itemId}','${escAttr(name)}','${escAttr(item.arabicName||'')}','${escAttr(item.englishName||'')}','${s.key}','${s.value}')">+</button>`;
-    } else {
-      const opts = sizes.map(s => {
-        const label = SIZE_LABELS[s.key]?.[currentLang] ?? s.key;
-        const val = s.value === '0' ? '?' : s.value;
-        return `<option value="${s.key}|${s.value}">${label} — ${val} ${currentLang==='ar'?'ج':'LE'}</option>`;
-      }).join('');
-      sizeSelectInline = `<div class="size-add-row">
-        <select class="size-select" id="sel-${itemId}">${opts}</select>
-        <button class="add-btn-inline"
-          onclick="addToCartFromSelect('${itemId}','${escAttr(item.arabicName||'')}','${escAttr(item.englishName||'')}')">+</button>
-      </div>`;
-    }
-  }
+  inlineAddHtml = `<button class="add-btn-inline"
+    onclick="openAddDialog('${itemId}','${escAttr(item.arabicName||'')}','${escAttr(item.englishName||'')}')">+</button>`;
+}
 
   card.innerHTML = `
     <div class="item-inner">
@@ -613,7 +597,141 @@ function renderBottomBar() {
   }
   document.getElementById('call-label').textContent = currentLang === 'ar' ? 'اتصل' : 'Call';
 }
+function openAddDialog(itemId, nameAr, nameEn) {
+  // جيب الـ item من الـ sections
+  let item = null;
+  for (const sec of (branchData?.sections || [])) {
+    for (const it of (sec.items || [])) {
+      const id = it._id || it.id || (currentLang === 'ar' ? it.arabicName : it.englishName);
+      if (id === itemId) { item = it; break; }
+    }
+    if (item) break;
+  }
+  if (!item) return;
 
+  const sizes = extractSizes(item);
+  if (!sizes.length) return;
+
+  // شيل أي dialog قديم
+  document.getElementById('add-dialog')?.remove();
+  document.body.style.overflow = 'hidden';
+
+  const overlay = document.createElement('div');
+  overlay.id = 'add-dialog';
+  overlay.style.cssText = `
+    position:fixed;inset:0;z-index:500;
+    background:rgba(0,0,0,0.7);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;animation:overlayIn 0.2s ease;
+  `;
+  overlay.onclick = (e) => { if (e.target === overlay) closeAddDialog(); };
+
+  const isSingle = sizes.length === 1;
+  let selectedKey = sizes[0].key;
+
+  const sizeChipsHtml = isSingle ? `
+    <div style="background:#000;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 14px;display:inline-block;margin-bottom:16px;">
+      <span style="font-size:15px;font-weight:900;background:var(--gold-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+        ${sizes[0].value === '0' ? (currentLang==='ar'?'حسب اليوم':'Price/Day') : sizes[0].value}
+        ${currentLang==='ar'?' ج':' LE'}
+      </span>
+    </div>
+  ` : `
+    <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:10px;">
+      ${currentLang==='ar'?'اختر الحجم':'Choose size'}
+    </div>
+    <div id="size-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+      ${sizes.map((s,i) => {
+        const label = SIZE_LABELS[s.key]?.[currentLang] ?? s.key;
+        const priceVal = s.value === '0' ? (currentLang==='ar'?'حسب اليوم':'Price/Day') : s.value;
+        return `<div class="size-chip ${i===0?'selected':''}" data-key="${s.key}" data-val="${s.value}"
+          onclick="selectSizeChip(this)"
+          style="padding:8px 10px;border-radius:12px;cursor:pointer;
+            background:${i===0?'linear-gradient(180deg,#FFCC44,#E08A00)':'#2B2B2B'};
+            border:1px solid ${i===0?'transparent':'#3A3A3A'};
+            display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span style="font-size:13px;font-weight:900;color:${i===0?'#000':'#fff'};">${label}</span>
+          <span style="font-size:11px;font-weight:700;color:${i===0?'#000':'rgba(255,255,255,0.5)'};">
+            ${priceVal} ${currentLang==='ar'?'ج':'LE'}
+          </span>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+
+  const itemName = currentLang === 'ar' ? nameAr : nameEn;
+
+  overlay.innerHTML = `
+    <div style="background:#1A1A1A;border-radius:20px;padding:20px;width:100%;max-width:380px;
+      animation:sheetUp 0.25s cubic-bezier(0.34,1.56,0.64,1);">
+      <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:16px;">${itemName}</div>
+      ${sizeChipsHtml}
+      <div style="display:flex;gap:10px;">
+        <button onclick="closeAddDialog()"
+          style="flex:1;height:46px;border-radius:12px;border:1px solid #3A3A3A;
+            background:#2B2B2B;color:rgba(255,255,255,0.5);
+            font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">
+          ${currentLang==='ar'?'إلغاء':'Cancel'}
+        </button>
+        <button onclick="confirmAddFromDialog('${itemId}','${escAttr(nameAr)}','${escAttr(nameEn)}')"
+          style="flex:2;height:46px;border-radius:12px;border:none;
+            background:linear-gradient(180deg,#FFCC44,#E08A00);
+            color:#000;font-family:'Cairo',sans-serif;font-size:14px;font-weight:900;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;gap:6px;">
+          <span style="font-size:18px;">+</span>
+          ${currentLang==='ar'?'أضف للعربة':'Add to cart'}
+        </button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+}
+
+function selectSizeChip(el) {
+  document.querySelectorAll('#size-chips .size-chip').forEach(c => {
+    c.style.background = '#2B2B2B';
+    c.style.borderColor = '#3A3A3A';
+    c.classList.remove('selected');
+    c.querySelectorAll('span').forEach(s => s.style.color = s.dataset.isPrice ? 'rgba(255,255,255,0.5)' : '#fff');
+  });
+  el.style.background = 'linear-gradient(180deg,#FFCC44,#E08A00)';
+  el.style.borderColor = 'transparent';
+  el.classList.add('selected');
+  el.querySelectorAll('span').forEach(s => s.style.color = '#000');
+}
+
+function confirmAddFromDialog(itemId, nameAr, nameEn) {
+  const selected = document.querySelector('#size-chips .size-chip.selected');
+  let sizeKey, price;
+  if (selected) {
+    sizeKey = selected.dataset.key;
+    price   = selected.dataset.val;
+  } else {
+    // حجم واحد — جيبه من الـ item
+    let item = null;
+    for (const sec of (branchData?.sections || [])) {
+      for (const it of (sec.items || [])) {
+        const id = it._id || it.id || (currentLang==='ar' ? it.arabicName : it.englishName);
+        if (id === itemId) { item = it; break; }
+      }
+      if (item) break;
+    }
+    const sizes = extractSizes(item || {});
+    if (!sizes.length) { closeAddDialog(); return; }
+    sizeKey = sizes[0].key;
+    price   = sizes[0].value;
+  }
+  addToCart(itemId, nameAr, nameAr, nameEn, sizeKey, price);
+
+  // snackbar صغيرة زي Flutter
+  showToast(currentLang==='ar'?'✅ تمت الإضافة للعربة':'✅ Added to cart');
+  closeAddDialog();
+}
+
+function closeAddDialog() {
+  document.getElementById('add-dialog')?.remove();
+  document.body.style.overflow = '';
+}
 function addToCart(itemId, name, nameAr, nameEn, sizeKey, price) {
   const existing = cart.find(c => c.itemId === itemId && c.sizeKey === sizeKey);
   if (existing) { existing.qty++; }
