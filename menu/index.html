@@ -507,24 +507,24 @@ function buildItemCard(item) {
   const imgUrl = item.image?.url || '';
   const sizes = extractSizes(item);
 
-  // price display
-  let priceHtml = '';
-  if (sizes.length > 0) {
-    const isSingle = sizes.length === 1;
-    const sizeItems = sizes.map((s, i) => {
-      const label = SIZE_LABELS[s.key]?.[currentLang] ?? s.key;
-      const val = s.value === '0' ? (currentLang === 'ar' ? 'حسب اليوم' : 'Price/Day') : s.value;
-      const sep = i < sizes.length - 1 ? '<span class="price-sep">·</span>' : '';
-      return `<span class="price-item">
-        ${!isSingle ? `<span class="size-label">${label}</span>` : ''}
-        <span class="price-val">${val}</span>
-      </span>${sep}`;
-    }).join('');
-    priceHtml = `<div class="price-box">
-      <span class="currency">${currentLang === 'ar' ? 'ج' : 'L.E'}</span>
-      ${sizeItems}
+let priceHtml = '';
+if (sizes.length > 0) {
+  const currency = currentLang === 'ar' ? 'ج' : 'L.E';
+  const chips = sizes.map(s => {
+    const label = SIZE_LABELS[s.key]?.[currentLang] ?? s.key;
+    const val = s.value === '0' ? (currentLang === 'ar' ? 'حسب اليوم' : 'Price/Day') : s.value;
+    return `<div style="
+      display:inline-flex;align-items:center;gap:4px;
+      background:#1A1A1A;border:1px solid #3A3A3A;
+      border-radius:10px;padding:5px 8px;">
+      <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.6);">${currency}</span>
+      <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.8);">${label}</span>
+      <span style="font-size:13px;font-weight:900;background:linear-gradient(180deg,#FFCC44,#E08A00);
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${val}</span>
     </div>`;
-  }
+  }).join('');
+  priceHtml = `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">${chips}</div>`;
+}
 
   const imgHtml = imgUrl
     ? `<img class="item-img" src="${imgUrl}" alt="${name}" loading="lazy" onerror="this.style.display='none'" />`
