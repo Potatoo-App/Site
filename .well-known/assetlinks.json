@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.solaziz.app",
+    "sha256_cert_fingerprints": ["AA:B5:42:C8:49:C2:F6:2B:F1:FC:3E:50:11:06:1A:B7:3C:65:C5:76:42:C6:BD:08:87:1D:58:38:49:11:44:E2"]
+  }
+}]
