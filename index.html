@@ -203,7 +203,7 @@
   }
   .btn-ios:hover { border-color: rgba(255,204,68,.4); color: var(--gold1); }
 
-  .btn-fb {
+  .	 {
     background: #1877F2;
     color: #fff;
     box-shadow: 0 8px 24px rgba(24,119,242,.35);
@@ -295,113 +295,7 @@
     opacity: 0;
     z-index: 1;
   }
-/* ── GAME BUTTON ── */
-.btn-game {
-  background: linear-gradient(135deg, #2ecc71, #27ae60);
-  color: #fff;
-  box-shadow: 0 8px 24px rgba(46,204,113,.35);
-}
-.btn-game:hover { box-shadow: 0 12px 32px rgba(46,204,113,.5); }
 
-/* ── GAME MODAL ── */
-.game-modal-backdrop {
-  position: fixed; inset: 0; z-index: 200;
-  background: rgba(0,0,0,.85);
-  backdrop-filter: blur(12px);
-  display: flex; align-items: center; justify-content: center;
-  padding: 16px;
-  opacity: 0; visibility: hidden;
-  transition: all 0.3s ease;
-}
-.game-modal-backdrop.open { opacity: 1; visibility: visible; }
-
-.game-box {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 20px;
-  max-width: 360px; width: 100%;
-  text-align: center;
-  transform: scale(0.9);
-  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
-  box-shadow: 0 40px 80px rgba(0,0,0,.6);
-}
-.game-modal-backdrop.open .game-box { transform: scale(1); }
-
-.game-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 12px;
-}
-.game-header h3 { font-size: 18px; font-weight: 900; color: var(--gold1); }
-.game-close-x {
-  background: none; border: none; color: #888;
-  font-size: 22px; cursor: pointer; line-height: 1;
-}
-.game-close-x:hover { color: #fff; }
-
-.game-stats {
-  display: flex; justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 13px;
-  color: rgba(255,255,255,.6);
-}
-.game-stats b { color: var(--gold1); }
-
-#gameCanvas {
-  background: linear-gradient(180deg, #1a1a1a, #0d0d0d);
-  border: 2px solid var(--border);
-  border-radius: 14px;
-  display: block;
-  margin: 0 auto;
-  touch-action: none;
-  max-width: 100%;
-}
-
-.game-controls {
-  display: flex; justify-content: center; gap: 40px;
-  margin-top: 14px;
-}
-.game-ctrl-btn {
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  background: var(--border);
-  border: 1px solid #333;
-  color: var(--gold1);
-  font-size: 22px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  user-select: none;
-}
-.game-ctrl-btn:active { background: var(--gold2); color: #111; }
-
-.game-canvas-wrap { position: relative; }
-
-.game-overlay-msg {
-  position: absolute; inset: 0;
-  display: none;
-  flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 12px;
-  background: rgba(0,0,0,.75);
-  border-radius: 14px;
-  text-align: center;
-  padding: 20px;
-}
-.game-overlay-msg.show { display: flex; }
-.game-overlay-msg h2 { color: var(--gold1); font-size: 22px; font-weight: 900; }
-.game-overlay-msg p { color: #ccc; font-size: 14px; }
-
-.game-start-btn, .game-retry-btn {
-  padding: 10px 24px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--gold1), var(--gold2));
-  color: #111;
-  border: none;
-  font-family: 'Tajawal', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-}
   /* ── RESPONSIVE ── */
   @media (max-width: 480px) {
     .btns { flex-direction: column; align-items: center; }
@@ -452,11 +346,7 @@
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
       تواصل معنا
     </a>
-    <button class="btn btn-game" onclick="openGame()">
-      🛵 العب لعبة التوصيل
-    </button>
   </div>
-  
 </main>
 
 <footer>
@@ -472,36 +362,7 @@
     <button class="modal-close" onclick="closeModal()">حسناً، سأنتظر!</button>
   </div>
 </div>
-<!-- GAME MODAL -->
-<div class="game-modal-backdrop" id="gameModalBackdrop" onclick="closeGameOutside(event)">
-  <div class="game-box">
-    <div class="game-header">
-      <h3>🛵 سباق التوصيل</h3>
-      <button class="game-close-x" onclick="closeGame()">✕</button>
-    </div>
-    <div class="game-stats">
-      <span>الوقت: <b id="gameTime">0.0</b> ث</span>
-      <span>السرعة: <b id="gameSpeed">1x</b></span>
-    </div>
-    <div class="game-canvas-wrap">
-      <canvas id="gameCanvas" width="300" height="440"></canvas>
-      <div class="game-overlay-msg show" id="gameStartMsg">
-        <h2>جاهز توصل الأوردر؟</h2>
-        <p>حرّك يمين/يسار عشان تتفادى العربيات والعوائق<br>وتوصل الأوردر في أسرع وقت!</p>
-        <button class="game-start-btn" onclick="startGame()">ابدأ التوصيل</button>
-      </div>
-      <div class="game-overlay-msg" id="gameOverMsg">
-        <h2>💥 حصل تصادم!</h2>
-        <p>وصلت في <b id="gameFinalTime">0</b> ثانية</p>
-        <button class="game-retry-btn" onclick="startGame()">حاول تاني</button>
-      </div>
-    </div>
-    <div class="game-controls">
-      <div class="game-ctrl-btn" id="btnLeft">◀</div>
-      <div class="game-ctrl-btn" id="btnRight">▶</div>
-    </div>
-  </div>
-</div>
+
 <!-- THREE.JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -705,172 +566,5 @@ document.addEventListener('keydown', (e) => {
   50%      { transform: translateY(-30px) scale(1.5); opacity: 0.4; }
 }
 </style>
-  <script>
-(function(){
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  const LANES = 3;
-  const laneW = W / LANES;
-  const playerH = 64;
-
-  let playerLane = 1;
-  let obstacles = [];
-  let roadLines = [];
-  let state = 'idle';
-  let startTime = 0;
-  let elapsed = 0;
-  let speedMult = 1;
-  let spawnTimer = 0;
-  let spawnInterval = 1100;
-  let rafId = null;
-  let lastFrame = performance.now();
-
-  const gameTimeEl = document.getElementById('gameTime');
-  const gameSpeedEl = document.getElementById('gameSpeed');
-  const startMsg = document.getElementById('gameStartMsg');
-  const overMsg = document.getElementById('gameOverMsg');
-  const finalTimeEl = document.getElementById('gameFinalTime');
-
-  function laneX(lane) { return lane * laneW + laneW / 2; }
-
-  function initRoadLines() {
-    roadLines = [];
-    for (let i = 0; i < 8; i++) roadLines.push({ y: i * (H / 8) });
-  }
-
-  function resetGame() {
-    playerLane = 1;
-    obstacles = [];
-    elapsed = 0;
-    speedMult = 1;
-    spawnTimer = 0;
-    spawnInterval = 1100;
-    initRoadLines();
-  }
-
-  window.startGame = function() {
-    resetGame();
-    state = 'playing';
-    startMsg.classList.remove('show');
-    overMsg.classList.remove('show');
-    startTime = performance.now();
-    lastFrame = performance.now();
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(loop);
-  };
-
-  window.openGame = function() {
-    document.getElementById('gameModalBackdrop').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    state = 'idle';
-    startMsg.classList.add('show');
-    overMsg.classList.remove('show');
-    draw();
-  };
-
-  window.closeGame = function() {
-    document.getElementById('gameModalBackdrop').classList.remove('open');
-    document.body.style.overflow = '';
-    state = 'idle';
-    if (rafId) cancelAnimationFrame(rafId);
-  };
-
-  window.closeGameOutside = function(e) {
-    if (e.target.id === 'gameModalBackdrop') closeGame();
-  };
-
-  function endGame() {
-    state = 'over';
-    if (rafId) cancelAnimationFrame(rafId);
-    finalTimeEl.textContent = elapsed.toFixed(1);
-    overMsg.classList.add('show');
-  }
-
-  function moveLeft() { if (state === 'playing') playerLane = Math.max(0, playerLane - 1); }
-  function moveRight() { if (state === 'playing') playerLane = Math.min(LANES - 1, playerLane + 1); }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') moveLeft();
-    if (e.key === 'ArrowRight') moveRight();
-  });
-  document.getElementById('btnLeft').addEventListener('click', moveLeft);
-  document.getElementById('btnRight').addEventListener('click', moveRight);
-
-  let touchStartX = null;
-  canvas.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
-  canvas.addEventListener('touchend', (e) => {
-    if (touchStartX === null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (dx > 30) moveRight();
-    else if (dx < -30) moveLeft();
-    touchStartX = null;
-  });
-
-  function loop(now) {
-    const dt = now - lastFrame;
-    lastFrame = now;
-    if (state === 'playing') {
-      elapsed = (now - startTime) / 1000;
-      speedMult = 1 + elapsed * 0.08;
-      gameTimeEl.textContent = elapsed.toFixed(1);
-      gameSpeedEl.textContent = speedMult.toFixed(1) + 'x';
-
-      roadLines.forEach(l => { l.y += 4 * speedMult; if (l.y > H) l.y -= H; });
-
-      spawnTimer += dt;
-      if (spawnTimer > spawnInterval) {
-        spawnTimer = 0;
-        spawnInterval = Math.max(450, 1100 - elapsed * 20);
-        const lane = Math.floor(Math.random() * LANES);
-        obstacles.push({ lane, y: -60, type: Math.random() > 0.5 ? '🚗' : '🚧' });
-      }
-
-      obstacles.forEach(o => o.y += 3.5 * speedMult);
-      obstacles = obstacles.filter(o => o.y < H + 80);
-
-      const playerY = H - 90;
-      for (const o of obstacles) {
-        if (o.lane === playerLane && o.y > playerY - playerH * 0.6 && o.y < playerY + playerH * 0.6) {
-          endGame();
-          break;
-        }
-      }
-    }
-    draw();
-    if (state === 'playing') rafId = requestAnimationFrame(loop);
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-    ctx.lineWidth = 2;
-    for (let i = 1; i < LANES; i++) {
-      ctx.beginPath();
-      ctx.moveTo(i * laneW, 0);
-      ctx.lineTo(i * laneW, H);
-      ctx.stroke();
-    }
-
-    ctx.fillStyle = 'rgba(255,204,68,0.15)';
-    roadLines.forEach(l => {
-      ctx.fillRect(laneW - 3, l.y, 6, 24);
-      ctx.fillRect(laneW * 2 - 3, l.y, 6, 24);
-    });
-
-    ctx.font = '38px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    obstacles.forEach(o => ctx.fillText(o.type, laneX(o.lane), o.y));
-
-    ctx.font = '42px sans-serif';
-    ctx.fillText('🛵', laneX(playerLane), H - 90);
-  }
-
-  initRoadLines();
-  draw();
-})();
-</script>
 </body>
 </html>
